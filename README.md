@@ -9,8 +9,14 @@
 pip install -r requirements.txt
 ```
 
+3. Download the nli model necessary:
+```
+py download_nli.py
+```
 
-3. run server api
+
+4. run server api
 ```
 python -m uvicorn main:app --reload
 ```
+

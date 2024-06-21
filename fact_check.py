@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # For NLI
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
+from sentence_transformers.cross_encoder import CrossEncoder
 import torch
 
 # For query building 
@@ -20,25 +20,28 @@ load_dotenv()
 class Premise:
     def __init__(self, premise, hypothesis):
         self.premise = premise
-        self.relationship = self.relationship = self._determine_relationship_premise_hypothesis(premise, hypothesis)
+        self.relationship = self._determine_relationship_premise_hypothesis(premise, hypothesis)
     
     # NLI task - to be change to xlm-roberta-nli for entailemnt, contradiction, neutral
+    
+
     def _determine_relationship_premise_hypothesis(self, premise, hypothesis):
-        model = AutoModelForSequenceClassification.from_pretrained("ctu-aic/xlm-roberta-large-squad2-ctkfacts_nli")
-        tokenizer = AutoTokenizer.from_pretrained("ctu-aic/xlm-roberta-large-squad2-ctkfacts_nli")
+        model_path = './nli'
+        model = CrossEncoder(model_path)
+        text_pairs = [[premise, hypothesis]]
+        logits = model.predict(text_pairs)
 
-        inputs = tokenizer.encode_plus(premise, hypothesis, return_tensors='pt')
+        # Apply softmax to convert logits to probabilities
+        probabilities = torch.nn.functional.softmax(torch.tensor(logits), dim=-1).numpy()
 
-        # Step 2: Pass the inputs through the model without computing gradients
-        with torch.no_grad():
-            outputs = model(**inputs)
-            logits = outputs.logits
-        
-        predicted_class = torch.argmax(logits, dim=1).item()
+        # Get the index of the highest probability
+        prediction = probabilities.argmax()
+
+        # Map index to label
         labels = ["entailment", "neutral", "contradiction"]
-        result = labels[predicted_class]
+        predicted_label = labels[prediction]
 
-        return result
+        return predicted_label
 
     def to_json(self):
         return {
@@ -73,7 +76,9 @@ class FactCheckResult:
                 page_content = self._get_page_content(url)
                 sentences = self._find_text_with_context(page_content, middle_words)
 
-                self._add_premise(sentences, query)
+                if sentences is not None and sentences.strip():
+                    self._add_premise(sentences, query)
+                
 
     def _google_custom_search(self, query):
         api_key = os.getenv("GOOGLE_SEARCH_API_KEY")  # Replace with your own API key
@@ -130,19 +135,19 @@ class query_processing:
     def _query_builder(self, text):
 
         
-        prompt = f"I need to generate search queries based on the following text. Please create multiple search queries that I can use in Google to find relevant information. \n Text: \n \"\"\" {text} \"\"\" \n Search Queries:\n1.\n2.\n3.\n4.\n5."
+        # prompt = f"I need to generate search queries based on the following text. Please create multiple search queries that I can use in Google to find relevant information. \n Text: \n \"\"\" {text} \"\"\" \n Search Queries:\n1.\n2.\n3.\n4.\n5."
         
+        # output = self._query(prompt)
 
-        output = self._query(prompt)
+        # # Extract the generated text from the response
+        # generated_text = output[0]['generated_text'].strip()
 
-        # Extract the generated text from the response
-        generated_text = output.choices[0].text.strip()
+        # # Split the generated text by numbers
+        # parts = re.split(r'\d+', generated_text)
 
-        # Split the generated text by numbers
-        parts = re.split(r'\d+', generated_text)
-
-        # Return the parts as the queries for fact-checking
-        return parts
+        # # Return the parts as the queries for fact-checking
+        # return parts
+        return text.split(".")
     
 
     # llama api url
@@ -154,6 +159,10 @@ class query_processing:
 
         payload = {
             "inputs": prompt,
+            "parameters" :{
+                "return_full_text": False,
+                "num_return_sequences": 1
+            }
         }
 
         response = requests.post(API_URL, headers=headers, json=payload)

@@ -1,7 +1,6 @@
 fastapi
 requests
 beautifulsoup4
-transformers
-torch
+sentence-transformers
 python-dotenv
 uvicorn
