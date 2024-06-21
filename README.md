@@ -1,10 +1,16 @@
 # fact-check-api
 
-to install dependencies:
+1. copy ".env example" renamed to env and fill up the values
+
+
+2. install dependencies:
 
 ```
 pip install -r requirements.txt
 ```
 
 
-copy ".env example" renamed to env and fill up the values
+3. run server api
+```
+python -m uvicorn main:app --reload
+```
