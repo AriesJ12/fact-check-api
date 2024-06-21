@@ -120,7 +120,7 @@ class FactCheckResult:
         }
 
 
-# query processing
+# query processing - still inconsistent(trying to find a better way)
 class query_processing:
     def __init__(self, query):
         self.query = query
@@ -160,35 +160,37 @@ class query_processing:
         return response.json()
 
 
+    def _translate_to_english(self, text):
+        pass
+
+    def _summarize_text_if_long(self, text):
+        pass
+
+
     def get_divided_queries(self):
         return self.dividedQueries
 
 
-
-def main():
-    query = input("Enter your search query: ")
+def main(text):
+    query = text
 
     # For query building
     queryBuilder = query_processing(query)
     claims = queryBuilder.get_divided_queries()
 
     maxClaimsToCheck = 3
-    FactCheckResult = []
+    FactCheckResultJson = []
     for i in range(min(maxClaimsToCheck, len(claims))):
 
         claim = claims[i]
         factClass = FactCheckResult(claim)
         factClass.get_All_Premises()
 
-        FactCheckResult.append(factClass.to_json())
+        FactCheckResultJson.append(factClass.to_json())
 
     # return the list of FactCheckResult objects
-    return FactCheckResult
+    return FactCheckResultJson
      
-
-
-
-
 # fact check explorer of google ---- i want to use semantic search
 def google_fact_check(query, num):
     api_key = os.getenv("GOOGLE_FACT_CHECK_API")  # Replace with your own API key
@@ -201,8 +203,3 @@ def google_fact_check(query, num):
         return data['claims'][:num]
     else:
         return []
-
-
-if __name__ == "__main__":
-    main()  
-    

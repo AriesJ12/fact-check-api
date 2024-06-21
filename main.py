@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from transformers import pipeline
+from fact_check import main
 
 app = FastAPI()
 
@@ -18,7 +18,4 @@ def root():
 
 @app.get("/api/v1/factCheck")
 def detect(content: str):
-    # if (classifier(content)[0]['label'] == "HATE"):
-    #     return {'result': 1}
-    # else:
-    #     return {'result': 0}
+    return {'result': main(content)}
