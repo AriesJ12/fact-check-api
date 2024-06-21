@@ -1,5 +1,5 @@
 #nli model
-nli\pytorch_model.bin
+nli/pytorch_model.bin
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
