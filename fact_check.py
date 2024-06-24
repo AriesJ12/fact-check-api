@@ -33,10 +33,10 @@ class ModelSingleton:
         return cls._instance
 
     @classmethod
-    def get_model(cls):
+    def get_model(cls, model_path='./nli'):
         # Ensure _model is not None before returning it
         if cls._model is None:
-            raise ValueError("Model has not been initialized.")
+            cls._model = CrossEncoder(model_path)
         return cls._model
 class Premise:
     def __init__(self, premise, hypothesis, url):
