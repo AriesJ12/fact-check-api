@@ -4,3 +4,4 @@ beautifulsoup4
 sentence-transformers
 python-dotenv
 uvicorn
+time
