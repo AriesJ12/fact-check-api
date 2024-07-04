@@ -19,8 +19,18 @@ import time
 
 from urllib.parse import urlparse  # Step 1: Import urlparse
 
+# for query preprocessing(stop words)
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
+#  For segmentation and co-reference resolution
+import spacy
+import neuralcoref
+
 load_dotenv()
 
+# this is for the nli method(fact checking)
 class ModelSingleton:
     _instance = None
     _model = None
@@ -170,11 +180,50 @@ class FactCheckResult:
         }
 
 
+# this is for query building
+class SpacyModelSingleton:
+    _instance = None
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            print("Loading Spacy model and adding neuralcoref...")
+            # Load the Spacy model
+            nlp = spacy.load('en_core_web_sm')
+            # Add neuralcoref to it
+            neuralcoref.add_to_pipe(nlp)
+            cls._instance = nlp
+        return cls._instance
+    
 # query processing - still inconsistent(trying to find a better way)
 class query_processing:
     def __init__(self, query):
         self.query = query
         self.dividedQueries = self._query_builder(query)
+        self.nlp = SpacyModelSingleton.get_instance('en_core_web_sm')
+
+    def _sentence_segmentation_with_coref(self, text):
+        """
+        Segments the given text into sentences with optional co-reference resolution.
+        
+        Args:
+            text (str): The input text to process.
+        
+        Returns:
+            List[str]: A list of sentences from the potentially co-reference resolved text.
+        """
+        # Check and add NeuralCoref to the pipeline if not already present
+        
+        # Process the text with Spacy's pipeline, including NeuralCoref
+        doc = self.nlp(text)
+        
+        # Resolve co-references if present, else use original text
+        resolved_text = doc._.coref_resolved if doc._.has_coref else text
+        
+        # Re-process the resolved text for sentence segmentation
+        sentences = [sent.text.strip() for sent in self.nlp(resolved_text).sents]
+        
+        return sentences
     
     # still no api key
     def _query_builder(self, text):
@@ -192,10 +241,13 @@ class query_processing:
 
         # # Return the parts as the queries for fact-checking
         # return parts
+        
+        # processed_text = self._remove_stopwords(text)
         return text.split(".")
     
+    
 
-    # llama api url
+    # llama api url --- might not be needed
     @staticmethod
     def _query(prompt):
         API_URL = "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct"
@@ -213,13 +265,37 @@ class query_processing:
         response = requests.post(API_URL, headers=headers, json=payload)
         return response.json()
 
-
     def _translate_to_english(self, text):
-        pass
+        # URL where the LibreTranslate API is accessible
+        libretranslate_url = "http://localhost:5000/translate"
+        
+        # Prepare the data for the POST request
+        data = {
+            "q": text,
+            "source": "auto",  # Let LibreTranslate detect the source language
+            "target": "en",    # Target language is English
+            "format": "text"
+        }
+        
+        # Send the request to the LibreTranslate API
+        try:
+            response = requests.post(libretranslate_url, data=data)
+            response.raise_for_status()  # Raises an error for bad responses
+            return response.json()['translatedText']
+        except requests.RequestException as e:
+            print(f"Request failed: {e}")
+            return None
 
-    def _summarize_text_if_long(self, text):
-        pass
-
+    def _remove_stopwords(self, text):
+        try:
+            stopwords = set(stopwords.words('english'))
+        except:
+            nltk.download('stopwords')
+            stopwords = set(stopwords.words('english'))
+        
+        word_tokens = word_tokenize(text)
+        filtered_text = [word for word in word_tokens if word.lower() not in stopwords]
+        return " ".join(filtered_text)
 
     def get_divided_queries(self):
         return self.dividedQueries

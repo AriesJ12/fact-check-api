@@ -5,3 +5,6 @@ sentence-transformers
 python-dotenv
 uvicorn
 time
+nltk
+spacy
+neuralcoref
