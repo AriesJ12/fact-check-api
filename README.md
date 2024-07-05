@@ -1,35 +1,30 @@
 # How to run (Docker exclusive)
 (Note: In order to run the coreference resolution, the project is running on python 3.7.10)
 
-1. docker build -t fact-check-api .
-
-2. docker run --env-file ./.env fact-check-api
-
-3. 
-
-# fact-check-api
-
-1. copy ".env example" renamed to env and fill up the values
-
-
-2. install dependencies:
-
+1. To run
 ```
-pip install -r requirements.txt
-```
-
-3. Download the nli model necessary:
-```
-py download_nli.py
-```
-4. Download spacy en_core_web(You might get an error while doing this step, make sure to download the latest microsoft c++ redistributable)
-```
-python -m spacy download en_core_web_sm
+docker-compose up
 ```
 
 
-5. run server api
+2. To stop 
 ```
-python -m uvicorn main:app --reload
+docker-compose stop
 ```
 
+You can optionally use the command below if you want the container deleted-not recommended
+```
+docker-compose stop
+```
+
+Access using
+
+```
+http://localhost:8000/
+```
+
+or if it does not work
+
+```
+127.0.0.1:8000/
+```
