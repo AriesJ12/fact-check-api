@@ -227,6 +227,7 @@ class query_processing:
         return sentences
     
     def _query_builder(self, text):
+        return text.split(".")
         # Process the text with spaCy to create a Doc object
         doc = self.nlp(text)
         # Count the sentences by iterating over Doc.sents
@@ -324,26 +325,24 @@ class query_processing:
 
 def main(text):
     query = text
-
+    
+    # For query building
     queryBuilder = query_processing(query)
     claims = queryBuilder.get_divided_queries()
-    return "hello"
-    # For query building
-    # queryBuilder = query_processing(query)
-    # claims = queryBuilder.get_divided_queries()
-
-    # maxClaimsToCheck = 3
-    # FactCheckResultJson = []
+    # return claims
     
-    # for i in range(min(maxClaimsToCheck, len(claims))):
-    #     claim = claims[i]
-    #     factClass = FactCheckResult(claim)
-    #     factClass.get_All_Premises()
-
-    #     FactCheckResultJson.append(factClass.to_json())
-    # # return the list of FactCheckResult objects
+    maxClaimsToCheck = 3
+    FactCheckResultJson = []
     
-    # return FactCheckResultJson
+    for i in range(min(maxClaimsToCheck, len(claims))):
+        claim = claims[i]
+        factClass = FactCheckResult(claim)
+        factClass.get_All_Premises()
+
+        FactCheckResultJson.append(factClass.to_json())
+    # return the list of FactCheckResult objects
+    
+    return FactCheckResultJson
      
 # fact check explorer of google ---- i want to use semantic search
 def google_fact_check(query, num):
