@@ -1,0 +1,7 @@
+.env
+__pycache__
+.git
+.gitignore
+.venv
+.env example
+nli/pytorch_model.bin

@@ -1,3 +1,6 @@
+# How to run (Docker exclusive)
+1. 
+
 # fact-check-api
 
 1. copy ".env example" renamed to env and fill up the values
