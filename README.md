@@ -1,5 +1,11 @@
 # How to run (Docker exclusive)
-1. 
+(Note: In order to run the coreference resolution, the project is running on python 3.7.10)
+
+1. docker build -t fact-check-api .
+
+2. docker run --env-file ./.env fact-check-api
+
+3. 
 
 # fact-check-api
 

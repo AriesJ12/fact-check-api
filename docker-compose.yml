@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  fact-check-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - NAME=World
+    volumes:
+      - .:/app
+    command: uvicorn main:app --host 0.0.0.0 --reload
