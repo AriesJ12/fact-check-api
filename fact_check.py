@@ -20,9 +20,9 @@ import time
 from urllib.parse import urlparse  # Step 1: Import urlparse
 
 # for query preprocessing(stop words)
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+# import nltk
+# from nltk.corpus import stopwords
+# from nltk.tokenize import word_tokenize, sent_tokenize
 
 #  For segmentation and co-reference resolution
 import spacy
@@ -185,11 +185,11 @@ class SpacyModelSingleton:
     _instance = None
 
     @classmethod
-    def get_instance(cls):
+    def get_instance(cls, model_name='en_core_web_sm'):
         if cls._instance is None:
-            print("Loading Spacy model and adding neuralcoref...")
-            # Load the Spacy model
-            nlp = spacy.load('en_core_web_sm')
+            print(f"Loading Spacy model {model_name} and adding neuralcoref...")
+            # Load the Spacy model with the given model name
+            nlp = spacy.load(model_name)
             # Add neuralcoref to it
             neuralcoref.add_to_pipe(nlp)
             cls._instance = nlp
@@ -198,10 +198,11 @@ class SpacyModelSingleton:
 # query processing - still inconsistent(trying to find a better way)
 class query_processing:
     def __init__(self, query):
+        self.nlp = SpacyModelSingleton.get_instance('en_core_web_sm')
         self.query = query
         self.dividedQueries = self._query_builder(query)
-        self.nlp = SpacyModelSingleton.get_instance('en_core_web_sm')
 
+    # Sentence segmentation and coreference resolution(eg. "it" refers to "the dog" in "The dog ran. It was fast.")
     def _sentence_segmentation_with_coref(self, text):
         """
         Segments the given text into sentences with optional co-reference resolution.
@@ -225,28 +226,30 @@ class query_processing:
         
         return sentences
     
-    # still no api key
     def _query_builder(self, text):
-
+        # Process the text with spaCy to create a Doc object
+        doc = self.nlp(text)
+        # Count the sentences by iterating over Doc.sents
+        sentence_count = len(list(doc.sents))
         
-        # prompt = f"I need to generate search queries based on the following text. Please create multiple search queries that I can use in Google to find relevant information. \n Text: \n \"\"\" {text} \"\"\" \n Search Queries:\n1.\n2.\n3.\n4.\n5."
-        
-        # output = self._query(prompt)
+        if sentence_count <= 2:
+            # Directly check if the text (1 or 2 sentences) is a claim
+            is_claim = self._claim_detection([text])
+            processed_sentences = [text]
+            # if is_claim:  # Assuming _claim_detection returns a boolean or similar for claim detection
+            #     processed_sentences = [self._remove_stopwords(text)]
+            # else:
+            #     processed_sentences = []
+        else:
+            sentences = self._sentence_segmentation_with_coref(text)
+            # Perform claim detection on each sentence
+            claims = self._claim_detection(sentences)
+            # Remove stopwords from sentences identified as claims
+            # processed_sentences = [self._remove_stopwords(sentence) for sentence, is_claim in zip(sentences, claims) if is_claim]
+            processed_sentences = sentences
 
-        # # Extract the generated text from the response
-        # generated_text = output[0]['generated_text'].strip()
-
-        # # Split the generated text by numbers
-        # parts = re.split(r'\d+', generated_text)
-
-        # # Return the parts as the queries for fact-checking
-        # return parts
-        
-        # processed_text = self._remove_stopwords(text)
-        return text.split(".")
+        return processed_sentences
     
-    
-
     # llama api url --- might not be needed
     @staticmethod
     def _query(prompt):
@@ -266,25 +269,26 @@ class query_processing:
         return response.json()
 
     def _translate_to_english(self, text):
-        # URL where the LibreTranslate API is accessible
-        libretranslate_url = "http://localhost:5000/translate"
+        # # URL where the LibreTranslate API is accessible
+        # libretranslate_url = "http://localhost:5000/translate"
         
-        # Prepare the data for the POST request
-        data = {
-            "q": text,
-            "source": "auto",  # Let LibreTranslate detect the source language
-            "target": "en",    # Target language is English
-            "format": "text"
-        }
+        # # Prepare the data for the POST request
+        # data = {
+        #     "q": text,
+        #     "source": "auto",  # Let LibreTranslate detect the source language
+        #     "target": "en",    # Target language is English
+        #     "format": "text"
+        # }
         
-        # Send the request to the LibreTranslate API
-        try:
-            response = requests.post(libretranslate_url, data=data)
-            response.raise_for_status()  # Raises an error for bad responses
-            return response.json()['translatedText']
-        except requests.RequestException as e:
-            print(f"Request failed: {e}")
-            return None
+        # # Send the request to the LibreTranslate API
+        # try:
+        #     response = requests.post(libretranslate_url, data=data)
+        #     response.raise_for_status()  # Raises an error for bad responses
+        #     return response.json()['translatedText']
+        # except requests.RequestException as e:
+        #     print(f"Request failed: {e}")
+        #     return None
+        return text
 
     def _remove_stopwords(self, text):
         try:
@@ -297,6 +301,23 @@ class query_processing:
         filtered_text = [word for word in word_tokens if word.lower() not in stopwords]
         return " ".join(filtered_text)
 
+    def _claim_detection(self, texts):
+        API_URL = "https://api-inference.huggingface.co/models/Nithiwat/xlm-roberta-base_claim-detection"
+        token = os.getenv("HUGGING_FACE_TOKEN")
+        headers = {"Authorization": f"Bearer {token}"}
+
+        def query(payload):
+            response = requests.post(API_URL, headers=headers, json=payload)
+            return response.json()
+            
+        outputs = query({
+            "inputs": texts,
+        })
+        return outputs
+
+    def _retained_check_worth(self, text):
+        pass
+
     def get_divided_queries(self):
         return self.dividedQueries
 
@@ -304,22 +325,25 @@ class query_processing:
 def main(text):
     query = text
 
-    # For query building
     queryBuilder = query_processing(query)
     claims = queryBuilder.get_divided_queries()
+    return "hello"
+    # For query building
+    # queryBuilder = query_processing(query)
+    # claims = queryBuilder.get_divided_queries()
 
-    maxClaimsToCheck = 3
-    FactCheckResultJson = []
+    # maxClaimsToCheck = 3
+    # FactCheckResultJson = []
     
-    for i in range(min(maxClaimsToCheck, len(claims))):
-        claim = claims[i]
-        factClass = FactCheckResult(claim)
-        factClass.get_All_Premises()
+    # for i in range(min(maxClaimsToCheck, len(claims))):
+    #     claim = claims[i]
+    #     factClass = FactCheckResult(claim)
+    #     factClass.get_All_Premises()
 
-        FactCheckResultJson.append(factClass.to_json())
-    # return the list of FactCheckResult objects
+    #     FactCheckResultJson.append(factClass.to_json())
+    # # return the list of FactCheckResult objects
     
-    return FactCheckResultJson
+    # return FactCheckResultJson
      
 # fact check explorer of google ---- i want to use semantic search
 def google_fact_check(query, num):
