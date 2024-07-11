@@ -6,10 +6,6 @@ from bs4 import BeautifulSoup
 from sentence_transformers.cross_encoder import CrossEncoder
 import torch
 
-# For query building 
-# from openai import OpenAI
-# client = OpenAI()
-import re
 
 # env
 import os

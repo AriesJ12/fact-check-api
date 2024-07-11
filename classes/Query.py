@@ -77,26 +77,8 @@ class Query:
         return response.json()
 
     def _translate_to_english(self, text):
-        # # URL where the LibreTranslate API is accessible
-        # libretranslate_url = "http://localhost:5000/translate"
-        
-        # # Prepare the data for the POST request
-        # data = {
-        #     "q": text,
-        #     "source": "auto",  # Let LibreTranslate detect the source language
-        #     "target": "en",    # Target language is English
-        #     "format": "text"
-        # }
-        
-        # # Send the request to the LibreTranslate API
-        # try:
-        #     response = requests.post(libretranslate_url, data=data)
-        #     response.raise_for_status()  # Raises an error for bad responses
-        #     return response.json()['translatedText']
-        # except requests.RequestException as e:
-        #     print(f"Request failed: {e}")
-        #     return None
-        return text
+        translator = Translate()
+        return translator.tagalog_to_english(text)
 
     def _remove_stopwords(self, text):
         try:

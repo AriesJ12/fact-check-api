@@ -1,4 +1,5 @@
 import os
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,8 +21,19 @@ class Translate:
             str: The translated text.
         """
 
-        # Translate the text
-        translated_text = "Hello, world!"
+        api_key = os.getenv("HUGGING_FACE_TOKEN")
 
-        return translated_text
+        API_URL = "https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt-tl-en"
+        headers = {"Authorization": "Bearer " + api_key}
+
+        def query(payload):
+            response = requests.post(API_URL, headers=headers, json=payload)
+            return response.json()
+            
+        output = query({
+            "inputs": text,
+        })
+        return output["translation_text"]
+
+        
 

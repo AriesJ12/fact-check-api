@@ -7,6 +7,9 @@ from .Premise import Premise
 import os
 from dotenv import load_dotenv
 
+import time 
+from urllib.parse import urlparse
+
 load_dotenv()
 
 class FactCheckResult:
@@ -61,6 +64,18 @@ class FactCheckResult:
         response = requests.get(url, params=params)
         return response.json()
     
+    def _google_fact_check(query, num):
+        api_key = os.getenv("GOOGLE_FACT_CHECK_API")  # Replace with your own API key
+        url = f"https://factchecktools.googleapis.com/v1alpha1/claims:search?query={query}&key={api_key}"
+        
+        response = requests.get(url)
+        data = response.json()
+
+        if 'claims' in data:
+            return data['claims'][:num]
+        else:
+            return []
+
     def _get_page_content(self, url):
         try:
             # Inside your method
