@@ -5,5 +5,3 @@ sentence-transformers==2.2.2
 python-dotenv==0.21.1
 uvicorn==0.22.0
 nltk==3.8.1
-spacy==2.3.5
-neuralcoref==4.0

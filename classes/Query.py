@@ -58,9 +58,8 @@ class Query:
 
         return processed_sentences
     
-    # llama api url --- might not be needed
-    @staticmethod
-    def _query(prompt):
+
+    def _claimNormalization(prompt):
         API_URL = "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct"
         token = os.getenv("HUGGING_FACE_TOKEN")
         headers = {"Authorization": f"Bearer {token}"}
