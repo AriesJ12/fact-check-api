@@ -18,13 +18,24 @@ docker-compose down
 ```
 
 Access using
-
-```
-http://localhost:8000/
-```
+[localhost:8000/](http://localhost:8000/)
 
 or if it does not work
+[127.0.0.1:8000](http://127.0.0.1:8000/)
 
+
+
+#### This might be unstable since it is os/libraries versions dependent
+
+3. To run with uvicorn(you can just run the last one, if you have ran the other commands before)
 ```
-127.0.0.1:8000/
+pip install -r requirements.txt
+
+py download_nli.py
+
+python -m spacy download en_core_web_sm
+
+python -m uvicorn main:app --reload
 ```
+access with: 
+[127.0.0.1:8000](http://127.0.0.1:8000/)
