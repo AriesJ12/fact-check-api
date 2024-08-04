@@ -1,6 +1,5 @@
 import os
 from transformers import AutoModel
-import torch
 
 # Set the cache directory
 cache_dir = 'nli'
