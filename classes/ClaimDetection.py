@@ -6,6 +6,7 @@ class ClaimDetection:
     
     @staticmethod
     def detect_claim(text):
+        """returns yes or no"""
         client = OpenAI()
         completion = client.chat.completions.create(
             model="gpt-4o-mini",

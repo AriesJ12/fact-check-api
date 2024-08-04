@@ -13,19 +13,21 @@ from urllib.parse import urlparse
 load_dotenv()
 
 class FactCheckResult:
-    def __init__(self, hypothesis):
+    def __init__(self, query, hypothesis):
         self.premises = []
+        self.query = query
         self.hypothesis = hypothesis
         self.session = requests.Session()
         self.session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'})
         self.last_url = None
     
-    def __add_premise(self, premise, hypothesis, url):
-        premise_obj = Premise(premise, hypothesis, url)
+    def __add_premise(self, premise, url, title, date):
+        hypothesis = self.hypothesis
+        premise_obj = Premise(premise=premise, hypothesis=hypothesis, url=url, title=title, date=date)
         self.premises.append(premise_obj.to_json())
 
     def get_All_Premises(self):
-        query = self.hypothesis
+        query = self.query
         results = self.__google_custom_search(query)
         if "items" in results:
             init_premises = 0
@@ -34,6 +36,16 @@ class FactCheckResult:
                 if init_premises >= MAX_PREMISES:
                     break
                 url = item["link"]
+                title = item.get("title", "No title available")
+        
+                date = "No date available"
+                if "pagemap" in item:
+                    pagemap = item["pagemap"]
+                    if "metatags" in pagemap and len(pagemap["metatags"]) > 0:
+                        date = pagemap["metatags"][0].get("article:published_time", date)
+                    elif "newsarticle" in pagemap and len(pagemap["newsarticle"]) > 0:
+                        date = pagemap["newsarticle"][0].get("datepublished", date)
+
                 snippet = item["snippet"]
                 page_content = self.__get_page_content(url)
                 if page_content is None:
@@ -46,7 +58,7 @@ class FactCheckResult:
 
                 sentences = self.__find_text_with_context(page_content, middle_words)
                 if sentences is not None and sentences.strip():
-                    self.__add_premise(sentences, query, url)
+                    self.__add_premise(premise=sentences, url=url, title=title, date=date)
                     init_premises += 1
 
     def __google_custom_search(self, query):

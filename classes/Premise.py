@@ -4,11 +4,13 @@ from .NLISingleton import NLISingleton
 
 
 class Premise:
-    def __init__(self, premise, hypothesis, url):
+    def __init__(self, premise, hypothesis, url, title, date):
         # Ensure the model is initialized
         NLISingleton(model_path='../nli')  # This line ensures the model is initialized
         self.premise = premise
         self.url = url
+        self.title = title
+        self.date = date
         self.relationship = self.__determine_relationship_premise_hypothesis(premise, hypothesis)
     
     def __determine_relationship_premise_hypothesis(self, premise, hypothesis):
@@ -32,5 +34,7 @@ class Premise:
         return {
             'premise': self.premise,
             'relationship': self.relationship,
-            'url': self.url
+            'url': self.url,
+            'title': self.title,
+            'date': self.date
         }

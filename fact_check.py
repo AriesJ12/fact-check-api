@@ -105,7 +105,8 @@ def main_fact_check(text):
     
     for i in range(min(maxClaimsToCheck, len(claimsPairs))):
         query = claimsPairs[i]['query']
-        factClass = FactCheckResult(query)
+        claim = claimsPairs[i]['claim']
+        factClass = FactCheckResult(query=query, hypothesis=claim)
         factClass.get_All_Premises()
         FactCheckResultJson.append(factClass.to_json())
     # return the list of FactCheckResult objects

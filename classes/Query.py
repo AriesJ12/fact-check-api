@@ -6,6 +6,20 @@ class Query:
     
     @staticmethod
     def query_builder(text):
+        """returns:
+        [
+            {
+                "claim": "<individual health-related claim>",
+                "query": "<clear and concise query>"
+            },
+            {
+                "claim": "<individual health-related claim>",
+                "query": "<clear and concise query>"
+            },
+
+        ]
+        
+        """
         client = OpenAI()
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
