@@ -9,9 +9,9 @@ class Premise:
         NLISingleton(model_path='../nli')  # This line ensures the model is initialized
         self.premise = premise
         self.url = url
-        self.relationship = self._determine_relationship_premise_hypothesis(premise, hypothesis)
+        self.relationship = self.__determine_relationship_premise_hypothesis(premise, hypothesis)
     
-    def _determine_relationship_premise_hypothesis(self, premise, hypothesis):
+    def __determine_relationship_premise_hypothesis(self, premise, hypothesis):
         model = NLISingleton.get_model()
         text_pairs = [[premise, hypothesis]]
         logits = model.predict(text_pairs)

@@ -23,4 +23,4 @@ class ClaimDetection:
             max_tokens=64,
             top_p=0.1
         )
-        return completion.choices[0].message
+        return completion.choices[0].message.content

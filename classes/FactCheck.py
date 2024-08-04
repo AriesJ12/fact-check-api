@@ -20,12 +20,13 @@ class FactCheckResult:
         self.session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'})
         self.last_url = None
     
-    def _add_premise(self, premise, hypothesis, url):
-        self.premises.append(Premise(premise, hypothesis, url))
+    def __add_premise(self, premise, hypothesis, url):
+        premise_obj = Premise(premise, hypothesis, url)
+        self.premises.append(premise_obj.to_json())
 
     def get_All_Premises(self):
         query = self.hypothesis
-        results = self._google_custom_search(query)
+        results = self.__google_custom_search(query)
         if "items" in results:
             init_premises = 0
             MAX_PREMISES = 5
@@ -34,22 +35,21 @@ class FactCheckResult:
                     break
                 url = item["link"]
                 snippet = item["snippet"]
-                page_content = self._get_page_content(url)
+                page_content = self.__get_page_content(url)
+                if page_content is None:
+                    continue
 
                 # Get the middle words from the snippet
                 words = snippet.split()
                 middle_index = len(words) // 2
                 middle_words = words[max(0, middle_index - 2):middle_index + 3]
 
-                if page_content is None:
-                    continue
-                else:
-                    sentences = self._find_text_with_context(page_content, middle_words)
-                    if sentences is not None and sentences.strip():
-                        self._add_premise(sentences, query, url)
-                        init_premises += 1
+                sentences = self.__find_text_with_context(page_content, middle_words)
+                if sentences is not None and sentences.strip():
+                    self.__add_premise(sentences, query, url)
+                    init_premises += 1
 
-    def _google_custom_search(self, query):
+    def __google_custom_search(self, query):
         api_key = os.getenv("GOOGLE_SEARCH_API_KEY")  # Replace with your own API key
         cx = os.getenv("GOOGLE_SEARCH_ID")  # Replace with your own Custom Search Engine ID
         # Assuming google_custom_search function sends a GET request to the Google Custom Search JSON API
@@ -64,7 +64,7 @@ class FactCheckResult:
         response = requests.get(url, params=params)
         return response.json()
     
-    def _google_fact_check(query, num):
+    def __google_fact_check(query, num):
         api_key = os.getenv("GOOGLE_FACT_CHECK_API")  # Replace with your own API key
         url = f"https://factchecktools.googleapis.com/v1alpha1/claims:search?query={query}&key={api_key}"
         
@@ -76,7 +76,7 @@ class FactCheckResult:
         else:
             return []
 
-    def _get_page_content(self, url):
+    def __get_page_content(self, url):
         try:
             # Inside your method
             parsed_current_url = urlparse(url)
@@ -101,7 +101,7 @@ class FactCheckResult:
             print(f"Error occurred: {e}")
             return None
 
-    def _find_text_with_context(self, text, words):
+    def __find_text_with_context(self, text, words):
         words_to_find = " ".join(words)
         start_index = text.find(words_to_find)
         
@@ -121,6 +121,9 @@ class FactCheckResult:
     def to_json(self):
         return {
             'hypothesis': self.hypothesis,
-            'premises': [premise.to_json() for premise in self.premises]
+            'premises': self.premises
         }
+    
+    def get_processed_premises(self):
+        return self.premises
 

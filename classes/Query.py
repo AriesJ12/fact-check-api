@@ -1,5 +1,5 @@
 from openai import OpenAI
-
+import json
 class Query:
     def __init__(self, query):
         pass
@@ -32,5 +32,6 @@ class Query:
             temperature=0.3,
             top_p=0.2
         )
-        return completion.choices[0].message
+        parsed_response = json.loads(completion.choices[0].message.content)
+        return parsed_response
     
