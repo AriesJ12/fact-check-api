@@ -1,3 +1,5 @@
+from classes.ClaimDetection import ClaimDetection
+
 def main_fact_check(text):
     """expected result:
         const sampleFact = {
@@ -271,4 +273,8 @@ def main_claim_detection(text):
     """expected result:
         {"result" : "yes"} or {"result" : "no"}
     """
-    return {"result" : "yes"}
+    result = ClaimDetection.detect_claim(text)
+    if result == "no" or result == "yes":
+        return {"result" : result}
+    else:
+        return {"result" : "error"}
