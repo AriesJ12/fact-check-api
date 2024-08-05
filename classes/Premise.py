@@ -6,7 +6,7 @@ from .NLISingleton import NLISingleton
 class Premise:
     def __init__(self, premise, hypothesis, url, title, date):
         # Ensure the model is initialized
-        NLISingleton(model_path='../nli')  # This line ensures the model is initialized
+        NLISingleton()  # This line ensures the model is initialized
         self.premise = premise
         self.url = url
         self.title = title

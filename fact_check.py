@@ -99,7 +99,7 @@ def main_fact_check(text):
   
     claimsPairs = Query.query_builder(text)
     # return claims
-    
+    print(claimsPairs)
     maxClaimsToCheck = 5
     FactCheckResultJson = []
     
@@ -147,12 +147,11 @@ def main_fact_check_without_query(text):
         },
     ];
     """
-    factClass = FactCheckResult(text)
+    factClass = FactCheckResult(query=text, hypothesis=text)
     factClass.get_All_Premises()
-    return factClass.get_processed_premises
+    return factClass.get_processed_premises()
 
-    
-
+  
 def main_claim_detection(text):
     """expected result:
         {"result" : "yes"} or {"result" : "no"}
@@ -162,3 +161,9 @@ def main_claim_detection(text):
         return {"result" : result}
     else:
         return {"result" : "error"}
+    
+# if __name__ == '__main__':
+#     text = "Covid is deadly"
+#     print(main_claim_detection(text))
+#     print(main_fact_check_without_query(text))
+#     print(main_fact_check(text))

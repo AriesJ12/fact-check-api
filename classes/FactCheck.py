@@ -47,16 +47,16 @@ class FactCheckResult:
                         date = pagemap["newsarticle"][0].get("datepublished", date)
 
                 snippet = item["snippet"]
+                sentences = snippet
+                # to increase the snippet
                 page_content = self.__get_page_content(url)
-                if page_content is None:
-                    continue
-
-                # Get the middle words from the snippet
-                words = snippet.split()
-                middle_index = len(words) // 2
-                middle_words = words[max(0, middle_index - 2):middle_index + 3]
-
-                sentences = self.__find_text_with_context(page_content, middle_words)
+                if page_content is not None:
+                    # Get the middle words from the snippet
+                    words = snippet.split()
+                    middle_index = len(words) // 2
+                    middle_words = words[max(0, middle_index - 2):middle_index + 3]
+                    sentences = self.__find_text_with_context(page_content, middle_words)
+                
                 if sentences is not None and sentences.strip():
                     self.__add_premise(premise=sentences, url=url, title=title, date=date)
                     init_premises += 1
@@ -65,7 +65,7 @@ class FactCheckResult:
         api_key = os.getenv("GOOGLE_SEARCH_API_KEY")  # Replace with your own API key
         cx = os.getenv("GOOGLE_SEARCH_ID")  # Replace with your own Custom Search Engine ID
         # Assuming google_custom_search function sends a GET request to the Google Custom Search JSON API
-        maxResult = 10
+        maxResult = 10 # this is having an error, if its more than 10; it will break
         url = "https://www.googleapis.com/customsearch/v1"
         params = {
             'q': query,
