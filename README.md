@@ -1,6 +1,5 @@
-# How to run (Docker exclusive)
-(Note: In order to run the coreference resolution, the project is running on python 3.7.10)
-
+# How to run (Docker exclusive) -- recommended if you want to deploy in a server or if the fast api doesnt work in your pc
+Python version: 3.12.4
 1. To run
 ```
 docker-compose up
@@ -25,7 +24,7 @@ or if it does not work
 
 
 
-#### This might be unstable since it is os/libraries versions dependent
+# recommended if you are trying to install in your pc only; This might be unstable since it is os/libraries versions dependent
 
 3. To run with uvicorn(you can just run the last one, if you have ran the other commands before)
 ```
