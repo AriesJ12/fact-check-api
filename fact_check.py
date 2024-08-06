@@ -156,7 +156,12 @@ def main_claim_detection(text):
     """expected result:
         {"result" : "yes"} or {"result" : "no"}
     """
-    result = ClaimDetection.detect_claim(text)
+    try:
+      result = ClaimDetection.detect_claim(text)
+    except Exception as e:
+      print(e)
+      return {"result" : str(e)}
+    
     if result == "no" or result == "yes":
         return {"result" : result}
     else:

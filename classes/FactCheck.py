@@ -63,7 +63,7 @@ class FactCheckResult:
                     init_premises += 1
 
     def __google_custom_search(self, query):
-        counter_instance = Counter(file="google_calls.json", max_calls_per_day=80)
+        counter_instance = Counter(db_file="google_calls.db", max_calls_per_day=80)
         counter_instance.update_counter()
         api_key = os.getenv("GOOGLE_SEARCH_API_KEY")  # Replace with your own API key
         cx = os.getenv("GOOGLE_SEARCH_ID")  # Replace with your own Custom Search Engine ID

@@ -23,7 +23,7 @@ class Query:
         ]
         
         """
-        counter_instance = Counter(file="gpt_calls.json", max_calls_per_day=80)
+        counter_instance = Counter(db_file="gpt_calls.db", max_calls_per_day=80)
         counter_instance.update_counter()
         # client = OpenAI()
         # completion = client.chat.completions.create(
