@@ -1,5 +1,6 @@
 from openai import OpenAI
 
+from classes.Counter import Counter
 class ClaimDetection:
     def __init__(self):
         pass
@@ -7,6 +8,8 @@ class ClaimDetection:
     @staticmethod
     def detect_claim(text):
         """returns yes or no"""
+        counter_instance = Counter(file="gpt_calls.json", max_calls_per_day=80)
+        counter_instance.update_counter()
         # client = OpenAI()
         # completion = client.chat.completions.create(
         #     model="gpt-4o-mini",

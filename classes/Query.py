@@ -1,9 +1,12 @@
 from openai import OpenAI
 import json
+
+from classes.Counter import Counter
+
 class Query:
     def __init__(self, query):
         pass
-    
+
     @staticmethod
     def query_builder(text):
         """returns:
@@ -20,6 +23,8 @@ class Query:
         ]
         
         """
+        counter_instance = Counter(file="gpt_calls.json", max_calls_per_day=80)
+        counter_instance.update_counter()
         # client = OpenAI()
         # completion = client.chat.completions.create(
         #     model="gpt-4o-mini",
@@ -61,4 +66,5 @@ class Query:
         """
         parsed_response = json.loads(sample_response)
         return parsed_response
+    
     
