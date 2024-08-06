@@ -176,8 +176,8 @@ def main_claim_detection(text):
     else:
         return {"result" : "error"}
     
-# if __name__ == '__main__':
-#     text = "Covid is deadly"
+if __name__ == '__main__':
+    text = "Covid is deadly"
 #     print(main_claim_detection(text))
-#     print(main_fact_check_without_query(text))
+    print(main_fact_check_without_query(text))
 #     print(main_fact_check(text))
