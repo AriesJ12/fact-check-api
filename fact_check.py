@@ -96,10 +96,11 @@ def main_fact_check(text):
 
     """
     
-  
-    claimsPairs = Query.query_builder(text)
-    # return claims
-    print(claimsPairs)
+    try:
+      claimsPairs = Query.query_builder(text)
+    except Exception as e:
+      print(e)
+      return {"result" : str(e)}
     maxClaimsToCheck = 5
     FactCheckResultJson = []
     
@@ -107,7 +108,11 @@ def main_fact_check(text):
         query = claimsPairs[i]['query']
         claim = claimsPairs[i]['claim']
         factClass = FactCheckResult(query=query, hypothesis=claim)
-        factClass.get_All_Premises()
+        try:
+          factClass.get_All_Premises()
+        except Exception as e:
+          print(e)
+          return {"result" : str(e)}
         FactCheckResultJson.append(factClass.to_json())
     # return the list of FactCheckResult objects
     
@@ -148,7 +153,11 @@ def main_fact_check_without_query(text):
     ];
     """
     factClass = FactCheckResult(query=text, hypothesis=text)
-    factClass.get_All_Premises()
+    try:
+      factClass.get_All_Premises()
+    except Exception as e:
+      print(e)
+      return {"result" : str(e)}
     return factClass.get_processed_premises()
 
   
@@ -167,8 +176,8 @@ def main_claim_detection(text):
     else:
         return {"result" : "error"}
     
-if __name__ == '__main__':
-    text = "Covid is deadly"
-    print(main_claim_detection(text))
+# if __name__ == '__main__':
+#     text = "Covid is deadly"
+#     print(main_claim_detection(text))
 #     print(main_fact_check_without_query(text))
 #     print(main_fact_check(text))
