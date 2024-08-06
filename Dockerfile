@@ -13,9 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Download the NLI model
 RUN python download_nli.py
 
-# Download the Spacy model
-RUN python -m spacy download en_core_web_sm
-
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
