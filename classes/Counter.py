@@ -44,20 +44,8 @@ class Counter:
             ''', (counter["date"], counter["count"]))
             conn.commit()
 
-    def __testing_counter(self):
-        db_file = self.DB_FILE
-        new_value = 81
-        current_date = str(datetime.now().date())
-        with sqlite3.connect(db_file) as conn:
-            cursor = conn.cursor()
-            cursor.execute('''
-                INSERT INTO counter (date, count) VALUES (?, ?)
-                ON CONFLICT(date) DO UPDATE SET count = excluded.count
-            ''', (current_date, new_value))
-            conn.commit()
 
     def update_counter(self):
-        self.__testing_counter()
         counter = self.__read_counter()
         current_date = str(datetime.now().date())
 
