@@ -1,5 +1,3 @@
-import torch
-
 from .NLISingleton import NLISingleton
 
 
@@ -15,18 +13,11 @@ class Premise:
     
     def __determine_relationship_premise_hypothesis(self, premise, hypothesis):
         model = NLISingleton.get_model()
-        text_pairs = [[premise, hypothesis]]
-        logits = model.predict(text_pairs)
+        scores = model.predict([(premise, hypothesis)])
 
-        # Apply softmax to convert logits to probabilities
-        probabilities = torch.nn.functional.softmax(torch.tensor(logits), dim=-1).numpy()
-
-        # Get the index of the highest probability
-        prediction = probabilities.argmax()
-
-        # Map index to label
-        labels = ["entailment", "neutral", "contradiction"]
-        predicted_label = labels[prediction]
+        label_mapping = ['contradiction', 'entailment', 'neutral']
+        labels = [label_mapping[score_max] for score_max in scores.argmax(axis=1)]
+        predicted_label = labels[0]
 
         return predicted_label
 
