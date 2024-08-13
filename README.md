@@ -2,7 +2,7 @@
 
 - prerequisite:
 download the pytorch_model.bin in https://huggingface.co/ctu-aic/xlm-roberta-large-squad2-ctkfacts_nli/tree/main
-
+put it in the nli folder
 
 Python version: 3.12.4
 1. To run
