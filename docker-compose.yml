@@ -1,4 +1,8 @@
 version: '3.8'
+networks:
+  my_custom_network:
+    driver: bridge
+
 services:
   fact-check-api:
     build: .
@@ -9,3 +13,5 @@ services:
     volumes:
       - .:/app
     command: uvicorn main:app --host 0.0.0.0 --reload
+    networks:
+      - my_custom_network

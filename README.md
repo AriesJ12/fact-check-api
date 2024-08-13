@@ -1,10 +1,8 @@
 # How to run (Docker exclusive) -- recommended if you want to deploy in a server or if the fast api doesnt work in your pc
 
 - prerequisite:
-```
-pip install transformers
-```
-not included in the docker files, you can delete it after downloading the model
+download the pytorch_model.bin in https://huggingface.co/ctu-aic/xlm-roberta-large-squad2-ctkfacts_nli/tree/main
+
 
 Python version: 3.12.4
 1. To run
