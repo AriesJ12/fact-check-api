@@ -3,11 +3,6 @@ from sumy.parsers.html import HtmlParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
-import nltk
-import os
-import requests
-import random
-from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional, List
 

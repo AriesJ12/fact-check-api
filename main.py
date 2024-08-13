@@ -14,6 +14,10 @@ app.add_middleware(
     allow_headers=["Content-type"],
 )
 
+# parang delikado to, for some reaeson
+from classes.Config import Config
+app.config = Config()
+
 @app.on_event("startup")
 async def download_nltk_resources():
     nltk.download("punkt")
