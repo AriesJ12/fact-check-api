@@ -1,3 +1,4 @@
+# This is currently broken, do not run; please read the README.md for instructions on how to download the model
 import os
 from transformers import AutoModel
 
