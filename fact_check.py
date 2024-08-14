@@ -1,6 +1,7 @@
 from classes.ClaimDetection import ClaimDetection
 from classes.FactCheck import FactCheckResult
 from classes.Query import Query
+from classes.TokenCounter import TokenCounter
 
 def main_fact_check(text):
     """expected result:
@@ -96,6 +97,17 @@ def main_fact_check(text):
 
     """
     
+    MAX_TOKENS = 150
+    is_in_range_token = TokenCounter.is_in_range_text(text=text, max_tokens=MAX_TOKENS)
+    if (not is_in_range_token):
+        return {"result" : "Invalid number of tokens"}
+    
+    is_health_claim = ClaimDetection.detect_claim(text)
+    if is_health_claim == "no":
+        return {"result" : "No claim detected"}
+    if not is_health_claim == "yes":
+        return {"result" : "error"}
+
     try:
       claimsPairs = Query.query_builder(text)
     except Exception as e:
@@ -152,6 +164,20 @@ def main_fact_check_without_query(text):
         },
     ];
     """
+    
+    # check max tokens
+    MAX_TOKENS = 50
+    is_in_range_token = TokenCounter.is_in_range_text(text=text, max_tokens=MAX_TOKENS)
+    if (not is_in_range_token):
+        return {"result" : "Invalid number of tokens"}
+    
+    # check if its a claim
+    is_health_claim = ClaimDetection.detect_claim(text)
+    if is_health_claim == "no":
+        return {"result" : "No claim detected"}
+    if not is_health_claim == "yes":
+        return {"result" : "error"}
+
     factClass = FactCheckResult(query=text, hypothesis=text)
     try:
       factClass.get_All_Premises()
@@ -165,6 +191,12 @@ def main_claim_detection(text):
     """expected result:
         {"result" : "yes"} or {"result" : "no"}
     """
+    # Check tokens
+    MAX_TOKENS = 100
+    is_in_range_token = TokenCounter.is_in_range_text(text=text, max_tokens=MAX_TOKENS)
+    if (not is_in_range_token):
+        return {"result" : "Invalid number of tokens"}
+    
     try:
       result = ClaimDetection.detect_claim(text)
     except Exception as e:
@@ -176,8 +208,9 @@ def main_claim_detection(text):
     else:
         return {"result" : "error"}
     
-if __name__ == '__main__':
-    text = "Covid is deadly"
+
+# if __name__ == '__main__':
+#     text = "Covid is deadly"
 #     print(main_claim_detection(text))
-    print(main_fact_check_without_query(text))
+    # print(main_fact_check_without_query(text))
 #     print(main_fact_check(text))
