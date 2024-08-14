@@ -18,8 +18,7 @@ class Query:
             {
                 "claim": "<individual health-related claim>",
                 "query": "<clear and concise query>"
-            },
-
+            }
         ]
         
         """
@@ -32,15 +31,19 @@ class Query:
         #         {
         #             "role": "system",
         #             "content": """
-        #                 You will be provided with a text. Identify each individual health-related claim and generate a separate, clear, and concise query for each claim. Respond with an array in the following format:
-        #                 [   
-        #                     {
-        #                         "claim": "<individual health-related claim>",
-        #                         "query": "<clear and concise query>"
-        #                     }
-        #                 ]
-        #                 Ensure that the response is only an array. And each query corresponds to one health-related claim and does not combine multiple claims.
-        #                 You will be provided with text in various languages. Always respond in English, regardless of the language of the input text.
+                    #    You will be provided with a text. Identify up to 4 individual health-related claims and generate a separate, clear, and concise query for each claim. Respond with an array in the following format:
+                    #     [   
+                    #         {
+                    #             "claim": "<individual health-related claim>",
+                    #             "query": "<clear and concise query>"
+                    #         }
+                    #     ]
+                    #     Ensure that:
+                    #     1. The response is only an array containing up to 4 objects.
+                    #     2. Each query corresponds to one health-related claim and does not combine multiple claims.
+                    #     3. The JSON output is complete and valid.
+                    #     4. Always respond in English, regardless of the language of the input text.
+                    #     5. If you did not find any health-related claims, respond with an empty array.
         #             """
         #         },
         #         {
