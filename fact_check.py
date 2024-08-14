@@ -3,6 +3,14 @@ from classes.FactCheck import FactCheckResult
 from classes.Query import Query
 from classes.TokenCounter import TokenCounter
 
+
+"""
+returns:
+expected result,
+{result: Invalid number of tokens},
+{result: Daily limit reached},
+{result: error} 
+"""
 def main_fact_check(text):
     """expected result:
         const sampleFact = {
@@ -101,13 +109,6 @@ def main_fact_check(text):
     is_in_range_token = TokenCounter.is_in_range_text(text=text, max_tokens=MAX_TOKENS)
     if (not is_in_range_token):
         return {"result" : "Invalid number of tokens"}
-    
-    is_health_claim = ClaimDetection.detect_claim(text)
-    if is_health_claim == "no":
-        return {"result" : "No claim detected"}
-    if not is_health_claim == "yes":
-        return {"result" : "error"}
-
     try:
       claimsPairs = Query.query_builder(text)
     except Exception as e:
@@ -131,6 +132,14 @@ def main_fact_check(text):
     return {"result": FactCheckResultJson}
 
 
+"""
+returns:
+expected result,
+{result: Invalid number of tokens},
+{result: No claim detected},
+{result: Daily limit reached},
+{result: error} 
+"""
 def main_fact_check_without_query(text):
     """expected result:
     [
@@ -186,7 +195,13 @@ def main_fact_check_without_query(text):
       return {"result" : str(e)}
     return factClass.get_processed_premises()
 
-  
+
+"""
+returns:
+expected result,
+{result: Invalid number of tokens},
+{result: error} 
+"""
 def main_claim_detection(text):
     """expected result:
         {"result" : "yes"} or {"result" : "no"}
