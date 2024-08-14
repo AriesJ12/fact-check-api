@@ -18,7 +18,7 @@ docker-compose stop
 
 You can optionally use the command below if you want the container deleted-not recommended
 ```
-docker-compose down
+docker-compose down --rmi all
 ```
 
 Access using
