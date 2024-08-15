@@ -1,5 +1,5 @@
 from .NLISingleton import NLISingleton
-
+import torch
 
 class Premise:
     def __init__(self, premise, hypothesis, url, title, date):
@@ -13,13 +13,19 @@ class Premise:
     
     def __determine_relationship_premise_hypothesis(self, premise, hypothesis):
         model = NLISingleton.get_model()
-        scores = model.predict([(premise, hypothesis)])
+        tokenizer = NLISingleton.get_tokenizer()
+        device = NLISingleton.get_device()
 
-        label_mapping = ['contradiction', 'entailment', 'neutral']
-        labels = [label_mapping[score_max] for score_max in scores.argmax(axis=1)]
-        predicted_label = labels[0]
+        input = tokenizer(premise, hypothesis, truncation=True, return_tensors="pt")
+        output = model(input["input_ids"].to(device))  # device = "cuda:0" or "cpu"
+        prediction = torch.softmax(output["logits"][0], -1).tolist()
+        label_names = ["entailment", "neutral", "contradiction"]
+        prediction_dict = {name: round(float(pred) * 100, 1) for pred, name in zip(prediction, label_names)}
 
-        return predicted_label
+        # Get the label with the highest probability
+        highest_label = max(prediction_dict, key=prediction_dict.get)
+
+        return highest_label
 
     def to_json(self):
         return {
