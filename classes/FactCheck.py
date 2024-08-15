@@ -50,13 +50,13 @@ class FactCheckResult:
                 snippet = item["snippet"]
                 sentences = snippet
                 # to increase the snippet
-                page_content = self.__get_page_content(url)
-                if page_content is not None:
-                    # Get the middle words from the snippet
-                    words = snippet.split()
-                    middle_index = len(words) // 2
-                    middle_words = words[max(0, middle_index - 2):middle_index + 3]
-                    sentences = self.__find_text_with_context(page_content, middle_words)
+                # page_content = self.__get_page_content(url)
+                # if page_content is not None:
+                #     # Get the middle words from the snippet
+                #     words = snippet.split()
+                #     middle_index = len(words) // 2
+                #     middle_words = words[max(0, middle_index - 2):middle_index + 3]
+                #     sentences = self.__find_text_with_context(page_content, middle_words)
                 
                 if sentences is not None and sentences.strip():
                     self.__add_premise(premise=sentences, url=url, title=title, date=date)

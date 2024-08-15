@@ -58,12 +58,20 @@ class Query:
         sample_response = """
         [
             {
-                "claim": "Covid is deadly",
-                "query": "Covid is deadly"
+                "claim": "Tea is linked to a lower chance of getting certain types of cancers.",
+                "query": "Is there evidence that tea consumption reduces the risk of certain types of cancers?"
             },
             {
-                "claim": "Polio is deadly",
-                "query": "Polio is deadly"
+                "claim": "Tea is linked to a lower chance of getting type 2 diabetes.",
+                "query": "Does drinking tea lower the risk of developing type 2 diabetes?"
+            },
+            {
+                "claim": "Tea is linked to a lower chance of getting Parkinson's disease.",
+                "query": "Can tea consumption reduce the likelihood of developing Parkinson's disease?"
+            },
+            {
+                "claim": "Tea is linked to a lower chance of getting heart disease.",
+                "query": "Is tea associated with a reduced risk of heart disease?"
             }
         ]
         """
