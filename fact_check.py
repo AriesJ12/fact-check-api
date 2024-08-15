@@ -200,6 +200,7 @@ def main_fact_check_without_query(text):
 returns:
 expected result,
 {result: Invalid number of tokens},
+{result: Daily limit reached},
 {result: error} 
 """
 def main_claim_detection(text):
