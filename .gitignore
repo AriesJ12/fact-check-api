@@ -1,6 +1,6 @@
 #nli model
 nli/pytorch_model.bin
-
+nli/model.safetensors
 
 
 # Byte-compiled / optimized / DLL files
