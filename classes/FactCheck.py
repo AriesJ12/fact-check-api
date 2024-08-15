@@ -32,7 +32,7 @@ class FactCheckResult:
         results = self.__google_custom_search(query)
         if "items" in results:
             init_premises = 0
-            MAX_PREMISES = 5
+            MAX_PREMISES = 8
             for item in results["items"]:
                 if init_premises >= MAX_PREMISES:
                     break
