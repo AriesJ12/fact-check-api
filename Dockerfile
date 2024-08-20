@@ -8,7 +8,18 @@ WORKDIR /app
 COPY . /app
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && \
+    apt-get install -y \
+        build-essential \
+        python3-dev \
+        python3-setuptools \
+        tesseract-ocr \
+        libgl1 \
+        make \
+        gcc \
+    && python3 -m pip install --no-cache-dir -r requirements.txt
+
+# RUN pip install --no-cache-dir -r requirements.txt
 
 # Download the NLI model
 # RUN python download_nli.py

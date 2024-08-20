@@ -4,6 +4,13 @@ from fact_check import main_fact_check, main_fact_check_without_query, main_clai
 from classes.Summarize import SummarizerService
 import nltk
 
+
+import io
+import requests
+import uvicorn
+import pytesseract
+from PIL import Image
+
 app = FastAPI()
 
 app.add_middleware(
@@ -56,3 +63,35 @@ async def claim_detection(content:str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+'''
+OCR
+'''
+
+@app.post("/extract_text_from_url")
+async def extract_text_from_url(url: str):
+    try:
+        response = requests.get(url)
+        if response.status_code != 200:
+            raise HTTPException(status_code=422, detail="Invalid image URL")
+        image = Image.open(io.BytesIO(response.content))
+        text = pytesseract.image_to_string(image)
+        return {"text": text.replace("\n", " ").strip()}
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+@app.get("/ocr")
+async def ocr(image_url: str):
+
+    try:
+        response = requests.get(image_url)
+        if response.status_code != 200:
+            raise HTTPException(status_code=422, detail="Invalid image URL")
+        image = Image.open(io.BytesIO(response.content))
+        text = pytesseract.image_to_string(image)
+        
+        return {"text": text.replace("\n", " ").strip()}
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
