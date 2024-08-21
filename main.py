@@ -75,7 +75,7 @@ async def claim_detection(content:str):
 OCR
 '''
 
-@app.post("/extract_text_from_url")
+@app.post("/api/v1/extract_text_from_url")
 async def extract_text_from_url(url: str):
     try:
         response = requests.get(url)
@@ -87,7 +87,7 @@ async def extract_text_from_url(url: str):
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))
 
-@app.get("/ocr")
+@app.get("/api/v1/ocr")
 async def ocr(image_url: str):
 
     try:
@@ -120,7 +120,7 @@ async def summarize(request: SummarizeRequest):
     
     return summary
 
-@app.get("/health_tips")
+@app.get("/api/v1/health_tips")
 async def health_tips(param: str):
     data = await get_list_and_random(param)
     id = data.get("RandomId")
