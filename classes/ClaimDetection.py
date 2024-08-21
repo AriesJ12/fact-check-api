@@ -1,31 +1,35 @@
-from openai import OpenAI
-
-from classes.Counter import Counter
+from transformers import pipeline
 class ClaimDetection:
-    def __init__(self):
-        pass
+    _instance = None
+    _classifier = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(ClaimDetection, cls).__new__(cls)
+            cls._classifier = pipeline("zero-shot-classification", model="./nli")
+        return cls._instance
     
     @staticmethod
     def detect_claim(text):
         """returns yes or no"""
-        counter_instance = Counter(db_file="gpt_calls.db", max_calls_per_day=80)
-        counter_instance.update_counter()
-        # client = OpenAI()
-        # completion = client.chat.completions.create(
-        #     model="gpt-4o-mini",
-        #     messages=[
-        #         {
-        #             "role": "system",
-        #             "content": "Classify the provided text as 'yes' or 'no' based on these rules:\n1. 'yes' if it's health-related and checkworthy.\n2. 'no' for all other cases."
-        #         },
-        #         {
-        #             "role": "user",
-        #             "content": text
-        #         }
-        #     ],
-        #     temperature=0.2,
-        #     max_tokens=64,
-        #     top_p=0.1
-        # )
-        # return completion.choices[0].message.content
-        return "yes"
+        if ClaimDetection._classifier is None:
+            ClaimDetection._classifier = pipeline("zero-shot-classification", model="./nli")
+        # Define the text to classify and candidate labels
+        sequence_to_classify = text
+        candidate_labels = ["health", "non-health"]
+
+        # Perform the classification
+        output = ClaimDetection._classifier(sequence_to_classify, candidate_labels, multi_label=False)
+
+        # Extract the label with the highest score
+        highest_score_label = output['labels'][0]
+
+        # Determine if the highest scoring label is 'health'
+        if highest_score_label == "health":
+            result = "yes"
+        else:
+            result = "no"
+
+        return result
+        
+        

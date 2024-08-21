@@ -1,7 +1,8 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fact_check import main_fact_check, main_fact_check_without_query, main_claim_detection
-from classes.Summarize import SummarizerService
+from classes.NLISingleton import NLISingleton
+from classes.ClaimDetection import ClaimDetection
 import nltk
 
 # rosgen
@@ -40,6 +41,8 @@ app.config = Config()
 @app.on_event("startup")
 async def download_nltk_resources():
     nltk.download("punkt")
+    nlisingleton = NLISingleton()
+    claimdetection = ClaimDetection()
 
 @app.get("/")
 async def root():
