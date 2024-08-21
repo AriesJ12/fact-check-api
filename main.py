@@ -6,11 +6,20 @@ from classes.ClaimDetection import ClaimDetection
 import nltk
 
 # rosgen
+import os
 import io
 import requests
 import uvicorn
 import pytesseract
 from PIL import Image
+
+
+'''
+Install Tesseract OCR for Windows
+'''
+home_dir = os.path.expanduser("~")
+pytesseract.pytesseract.tesseract_cmd = os.path.join(home_dir, 'AppData', 'Local', 'Programs', 'Tesseract-OCR', 'tesseract.exe')
+# pytesseract.pytesseract.tesseract_cmd = r'C:\\Users\\asus\AppData\\Local\\Programs\\Tesseract-OCR\tesseract.exe'
 
 # bruce
 import json
