@@ -1,6 +1,10 @@
-- prerequisite:
-download the model.safetensors in https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7/tree/main
-put it in the nli folder
+# prerequisite
+
+- download the model.safetensors in
+ https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7/tree/main
+
+
+- put it in the nli folder
 
 # run with docker
 
@@ -32,7 +36,7 @@ or if it does not work
 
 # without docker
 
-3. To run with uvicorn(you can just run the last one, if you have ran the other commands before)
+1. To run with uvicorn(you can just run the last one, if you have ran the other commands before)
 ```
 pip install -r requirements.txt
 
