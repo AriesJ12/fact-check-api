@@ -1,8 +1,13 @@
-# How to run (Docker exclusive) -- recommended if you want to deploy in a server or if the fast api doesnt work in your pc
+# prerequisite
 
-- prerequisite:
-download the model.safetensors in https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7/tree/main
-put it in the nli folder
+- download the model.safetensors in
+ https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7/tree/main
+
+
+- put it in the nli folder
+
+# run with docker
+
 
 Python version: 3.12.4
 1. To run
@@ -29,13 +34,11 @@ or if it does not work
 
 
 
-# recommended if you are trying to install in your pc only; This might be unstable since it is os/libraries versions dependent
+# without docker
 
-3. To run with uvicorn(you can just run the last one, if you have ran the other commands before)
+1. To run with uvicorn(you can just run the last one, if you have ran the other commands before)
 ```
 pip install -r requirements.txt
-
-py download_nli.py
 
 python -m uvicorn main:app --reload
 ```
