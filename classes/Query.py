@@ -1,7 +1,7 @@
-from openai import OpenAI
+# from openai import OpenAI
 import json
 
-from classes.Counter import Counter
+# from classes.Counter import Counter
 
 class Query:
     def __init__(self, query):
@@ -22,8 +22,8 @@ class Query:
         ]
         
         """
-        counter_instance = Counter(db_file="gpt_calls.db", max_calls_per_day=80)
-        counter_instance.update_counter()
+        # counter_instance = Counter(db_file="gpt_calls.db", max_calls_per_day=80)
+        # counter_instance.update_counter()
         # client = OpenAI()
         # completion = client.chat.completions.create(
         #     model="gpt-4o-mini",
@@ -55,45 +55,17 @@ class Query:
         #     top_p=0.2
         # )
         # parsed_response = json.loads(completion.choices[0].message.content)
-        if("Polio is a highly infectious disease caused by a virus. It invades the nervous system and can cause total paralysis in a matter of hours" == text):
-            sample_response = """
+
+        
+        json_response = f"""
             [
                 {
-                    "claim": "Polio is a highly infectious disease caused by a virus.",
-                    "query": "Is polio a highly infectious disease caused by a virus?"
-                },
-                {
-                    "claim": "Polio invades the nervous system.",
-                    "query": "Does polio invade the nervous system?"
-                },
-                {
-                    "claim": "Polio can cause total paralysis in a matter of hours.",
-                    "query": "Can polio cause total paralysis in a matter of hours?"
+                    "claim": "{text}",
+                    "query": "{text}"
                 }
             ]
             """
-        else:
-            sample_response = """
-            [
-    {
-        "claim": "Poor sleep leads to weight gain.",
-        "query": "Does poor sleep lead to weight gain?"
-    },
-    {
-        "claim": "Poor sleep weakens the immune system.",
-        "query": "Does poor sleep weaken the immune system?"
-    },
-    {
-        "claim": "Poor sleep negatively affects heart health.",
-        "query": "Does poor sleep negatively affect heart health?"
-    },
-    {
-        "claim": "Poor sleep leads to higher blood pressure.",
-        "query": "Does poor sleep lead to higher blood pressure?"
-    }
-]
-            """
-        parsed_response = json.loads(sample_response)
+        parsed_response = json.loads(json_response)
         return parsed_response
     
     
