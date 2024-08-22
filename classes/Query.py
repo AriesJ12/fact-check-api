@@ -75,23 +75,23 @@ class Query:
         else:
             sample_response = """
             [
-                {
-                    "claim": "Tea is linked to a lower chance of getting certain types of cancers.",
-                    "query": "Is there evidence that tea consumption reduces the risk of certain types of cancers?"
-                },
-                {
-                    "claim": "Tea is linked to a lower chance of getting type 2 diabetes.",
-                    "query": "Does drinking tea lower the risk of developing type 2 diabetes?"
-                },
-                {
-                    "claim": "Tea is linked to a lower chance of getting Parkinson's disease.",
-                    "query": "Can tea consumption reduce the likelihood of developing Parkinson's disease?"
-                },
-                {
-                    "claim": "Tea is linked to a lower chance of getting heart disease.",
-                    "query": "Is tea associated with a reduced risk of heart disease?"
-                }
-            ]
+    {
+        "claim": "Poor sleep leads to weight gain.",
+        "query": "Does poor sleep lead to weight gain?"
+    },
+    {
+        "claim": "Poor sleep weakens the immune system.",
+        "query": "Does poor sleep weaken the immune system?"
+    },
+    {
+        "claim": "Poor sleep negatively affects heart health.",
+        "query": "Does poor sleep negatively affect heart health?"
+    },
+    {
+        "claim": "Poor sleep leads to higher blood pressure.",
+        "query": "Does poor sleep lead to higher blood pressure?"
+    }
+]
             """
         parsed_response = json.loads(sample_response)
         return parsed_response
