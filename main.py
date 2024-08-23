@@ -48,11 +48,11 @@ app.add_middleware(
 from classes.Config import Config
 app.config = Config()
 
-# @app.on_event("startup")
-# async def download_nltk_resources():
-    # nltk.download("punkt")
-    # nlisingleton = NLISingleton()
-    # claimdetection = ClaimDetection()
+@app.on_event("startup")
+async def download_nltk_resources():
+    nltk.download("punkt")
+    nlisingleton = NLISingleton()
+    claimdetection = ClaimDetection()
 
 @app.get("/")
 async def root():
