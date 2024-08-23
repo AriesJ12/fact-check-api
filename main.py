@@ -12,7 +12,8 @@ import requests
 import uvicorn
 import pytesseract
 from PIL import Image
-
+import image_preprocessing as processing
+import numpy as np
 
 '''
 Install Tesseract OCR for Windows
@@ -47,11 +48,11 @@ app.add_middleware(
 from classes.Config import Config
 app.config = Config()
 
-@app.on_event("startup")
-async def download_nltk_resources():
-    nltk.download("punkt")
-    nlisingleton = NLISingleton()
-    claimdetection = ClaimDetection()
+# @app.on_event("startup")
+# async def download_nltk_resources():
+    # nltk.download("punkt")
+    # nlisingleton = NLISingleton()
+    # claimdetection = ClaimDetection()
 
 @app.get("/")
 async def root():
@@ -106,8 +107,24 @@ async def ocr(image_url: str):
         response = requests.get(image_url)
         if response.status_code != 200:
             raise HTTPException(status_code=422, detail="Invalid image URL")
-        image = Image.open(io.BytesIO(response.content))
-        text = pytesseract.image_to_string(image)
+        
+        # image = Image.open(io.BytesIO(response.content))
+        
+        # Create a byte string buffer
+        byte_string = io.BytesIO(response.content)
+        
+        # Validate image
+        try:
+            image = Image.open(byte_string)
+        except:
+            raise read_exception("Invalid image file")
+
+        # Convert image to numpy array
+        image_array = np.asarray(image)
+
+
+        # text = pytesseract.image_to_string(image)
+        text: str = processing.apply_image_processing(image_array)
         
         return {"text": text.replace("\n", " ").strip()}
     except Exception as e:
