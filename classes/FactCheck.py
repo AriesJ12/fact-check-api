@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 
 from .Premise import Premise
 
@@ -7,7 +7,6 @@ from .Premise import Premise
 import os
 from dotenv import load_dotenv
 
-import time 
 from urllib.parse import urlparse
 
 from classes.Counter import Counter
@@ -79,59 +78,59 @@ class FactCheckResult:
         response = requests.get(url, params=params)
         return response.json()
     
-    def __google_fact_check(query, num):
-        api_key = os.getenv("GOOGLE_FACT_CHECK_API")  # Replace with your own API key
-        url = f"https://factchecktools.googleapis.com/v1alpha1/claims:search?query={query}&key={api_key}"
+    # def __google_fact_check(query, num):
+    #     api_key = os.getenv("GOOGLE_FACT_CHECK_API")  # Replace with your own API key
+    #     url = f"https://factchecktools.googleapis.com/v1alpha1/claims:search?query={query}&key={api_key}"
         
-        response = requests.get(url)
-        data = response.json()
+    #     response = requests.get(url)
+    #     data = response.json()
 
-        if 'claims' in data:
-            return data['claims'][:num]
-        else:
-            return []
+    #     if 'claims' in data:
+    #         return data['claims'][:num]
+    #     else:
+    #         return []
 
-    def __get_page_content(self, url):
-        try:
-            # Inside your method
-            parsed_current_url = urlparse(url)
-            current_base_url = f"{parsed_current_url.scheme}://{parsed_current_url.netloc}"
+    # def __get_page_content(self, url):
+    #     try:
+    #         # Inside your method
+    #         parsed_current_url = urlparse(url)
+    #         current_base_url = f"{parsed_current_url.scheme}://{parsed_current_url.netloc}"
 
-            parsed_last_url = urlparse(self.last_url)
-            last_base_url = f"{parsed_last_url.scheme}://{parsed_last_url.netloc}"
+    #         parsed_last_url = urlparse(self.last_url)
+    #         last_base_url = f"{parsed_last_url.scheme}://{parsed_last_url.netloc}"
 
-            if current_base_url == last_base_url:  # Compare base URLs instead of full URLs
-                time.sleep(0.5)
+    #         if current_base_url == last_base_url:  # Compare base URLs instead of full URLs
+    #             time.sleep(0.5)
 
-            response = self.session.get(url, timeout=2)
-            self.last_url = url  # Update last_url with the full URL for future comparisons
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.text, 'html.parser')
-                text = soup.get_text()
-                return text.replace('\n', ' ')
-            else:
-                print(f"Request failed with status code: {response.status_code}")
-                return None
-        except requests.exceptions.RequestException as e:
-            print(f"Error occurred: {e}")
-            return None
+    #         response = self.session.get(url, timeout=2)
+    #         self.last_url = url  # Update last_url with the full URL for future comparisons
+    #         if response.status_code == 200:
+    #             soup = BeautifulSoup(response.text, 'html.parser')
+    #             text = soup.get_text()
+    #             return text.replace('\n', ' ')
+    #         else:
+    #             print(f"Request failed with status code: {response.status_code}")
+    #             return None
+    #     except requests.exceptions.RequestException as e:
+    #         print(f"Error occurred: {e}")
+    #         return None
 
-    def __find_text_with_context(self, text, words):
-        words_to_find = " ".join(words)
-        start_index = text.find(words_to_find)
+    # def __find_text_with_context(self, text, words):
+    #     words_to_find = " ".join(words)
+    #     start_index = text.find(words_to_find)
         
-        if start_index == -1:
-            return None
+    #     if start_index == -1:
+    #         return None
 
-        start_of_context = text.rfind('.', 0, start_index) + 1
-        end_of_context = text.find('.', start_index + len(words_to_find))
+    #     start_of_context = text.rfind('.', 0, start_index) + 1
+    #     end_of_context = text.find('.', start_index + len(words_to_find))
 
-        if start_of_context == -1:
-            start_of_context = 0
-        if end_of_context == -1:
-            end_of_context = len(text)
+    #     if start_of_context == -1:
+    #         start_of_context = 0
+    #     if end_of_context == -1:
+    #         end_of_context = len(text)
 
-        return text[start_of_context:end_of_context].strip()
+    #     return text[start_of_context:end_of_context].strip()
 
     def to_json(self):
         return {
