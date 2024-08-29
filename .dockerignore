@@ -4,4 +4,3 @@ __pycache__
 .gitignore
 .venv
 .env example
-nli/pytorch_model.bin
