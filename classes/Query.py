@@ -59,10 +59,10 @@ class Query:
         
         json_response = f"""
             [
-                {
+                {{
                     "claim": "{text}",
                     "query": "{text}"
-                }
+                }}
             ]
             """
         parsed_response = json.loads(json_response)
