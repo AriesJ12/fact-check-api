@@ -48,7 +48,7 @@ from classes.Config import Config
 app.config = Config()
 
 @app.on_event("startup")
-async def download_nltk_resources():
+async def start_up():
     nlisingleton = NLISingleton()
     claimdetection = ClaimDetection()
 
