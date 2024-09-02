@@ -5,6 +5,7 @@ import requests
 cache_dir = 'nli'
 os.makedirs(cache_dir, exist_ok=True)
 
+# URL of the model file
 model_url = 'https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7/resolve/main/model.safetensors'
 model_path = os.path.join(cache_dir, 'model.safetensors')
 
