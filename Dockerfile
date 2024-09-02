@@ -20,6 +20,10 @@ RUN apt-get update && \
     python3 -m pip install --upgrade pip setuptools && \
     python3 -m pip install --no-cache-dir -r requirements.txt
 
+
+# Set environment variable for Tesseract executable path
+ENV TESSERACT_CMD=/usr/bin/tesseract
+
 # Download the NLI model
 RUN python download_nli.py
 
