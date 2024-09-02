@@ -43,10 +43,6 @@ app.add_middleware(
     allow_headers=["Content-type"],
 )
 
-# parang delikado to, for some reaeson
-from classes.Config import Config
-app.config = Config()
-
 @app.on_event("startup")
 async def start_up():
     nlisingleton = NLISingleton()
@@ -231,5 +227,4 @@ async def get_list_and_random(
     # Debug
     # print(json.dumps(data, indent=4))
     return data
-
 
