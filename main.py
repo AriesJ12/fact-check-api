@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fact_check import main_fact_check, main_fact_check_without_query, main_claim_detection
 from classes.NLISingleton import NLISingleton
 from classes.ClaimDetection import ClaimDetection
-import nltk
 
 # rosgen
 # import os
@@ -49,8 +48,7 @@ from classes.Config import Config
 app.config = Config()
 
 @app.on_event("startup")
-async def download_nltk_resources():
-    nltk.download("punkt")
+async def start_up():
     nlisingleton = NLISingleton()
     claimdetection = ClaimDetection()
 
