@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.12.4-alpine
+FROM python:3.12.4-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -7,11 +7,20 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install dependencies
+# Install any needed packages specified in requirements.txt
+# RUN apt-get update && \
+#     apt-get install -y \
+#         build-essential \
+#         python3-dev \
+#         python3-setuptools \
+#         tesseract-ocr \
+#         libgl1 \
+#         make \
+#         gcc \
+#     && python3 -m pip install --no-cache-dir -r requirements.txt
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set environment variable for Tesseract executable path
-ENV TESSERACT_CMD=/usr/bin/tesseract
 
 # Download the NLI model
 RUN python download_nli.py
