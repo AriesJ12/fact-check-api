@@ -18,7 +18,7 @@ RUN apk add --no-cache \
     && apk del build-base
 
 # Set environment variable for Tesseract executable path
-ENV TESSERACT_CMD=/usr/bin/tesseract
+# ENV TESSERACT_CMD=/usr/bin/tesseract
 
 # Download the NLI model
 RUN python download_nli.py
