@@ -8,17 +8,10 @@ WORKDIR /app
 COPY . /app
 
 # Install dependencies
-RUN apk add --no-cache \
-    build-base \
-    tesseract-ocr \
-    tesseract-ocr-data \
-    && python3 -m ensurepip \
-    && pip3 install --no-cache --upgrade pip setuptools \
-    && pip3 install --no-cache-dir -r requirements.txt \
-    && apk del build-base
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Set environment variable for Tesseract executable path
-# ENV TESSERACT_CMD=/usr/bin/tesseract
+ENV TESSERACT_CMD=/usr/bin/tesseract
 
 # Download the NLI model
 RUN python download_nli.py
