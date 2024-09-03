@@ -21,6 +21,7 @@ Install Tesseract OCR for Windows
 # pytesseract.pytesseract.tesseract_cmd = r'C:\\Users\\asus\AppData\\Local\\Programs\\Tesseract-OCR\tesseract.exe'
 
 # bruce
+import nltk
 import json
 import random
 import requests
@@ -39,12 +40,13 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET"],
+    allow_headers=["Content-type"],
 )
 
-@app.on_event("startup")
+@app.before_event("startup")
 async def start_up():
+    nltk.download("punkt")
     nlisingleton = NLISingleton()
     claimdetection = ClaimDetection()
 
