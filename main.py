@@ -39,14 +39,14 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET"],
-    allow_headers=["Content-type"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-@app.on_event("startup")
-async def start_up():
-    nlisingleton = NLISingleton()
-    claimdetection = ClaimDetection()
+# @app.before_event("startup")
+# async def start_up():
+#     nlisingleton = NLISingleton()
+#     claimdetection = ClaimDetection()
 
 @app.get("/")
 async def root():
