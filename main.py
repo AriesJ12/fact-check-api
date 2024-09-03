@@ -43,7 +43,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.before_event("startup")
+@app.on_event("startup")
 async def start_up():
     nlisingleton = NLISingleton()
     claimdetection = ClaimDetection()
