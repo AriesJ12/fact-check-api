@@ -75,8 +75,20 @@ class FactCheckResult:
             'cx': cx,
             'num': maxResult
         }
+        try:
         response = requests.get(url, params=params)
+        
+        # This will raise an HTTPError if the status code is 4xx or 5xx
+        response.raise_for_status()
+
+        # If the response is successful, return the JSON data
         return response.json()
+
+    except requests.exceptions.HTTPError as http_err:
+        # Regardless of the specific error, raise an exception with the message "Daily limit reached"
+        raise Exception("Daily limit reached") from http_err
+
+        
     
     # def __google_fact_check(query, num):
     #     api_key = os.getenv("GOOGLE_FACT_CHECK_API")  # Replace with your own API key
