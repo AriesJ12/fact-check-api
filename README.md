@@ -12,7 +12,7 @@
 Python version: 3.12.4
 1. To run
 ```
-docker-compose up
+docker-compose up -d 
 ```
 
 
