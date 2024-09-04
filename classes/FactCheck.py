@@ -76,17 +76,17 @@ class FactCheckResult:
             'num': maxResult
         }
         try:
-        response = requests.get(url, params=params)
-        
-        # This will raise an HTTPError if the status code is 4xx or 5xx
-        response.raise_for_status()
+            response = requests.get(url, params=params)
+            
+            # This will raise an HTTPError if the status code is 4xx or 5xx
+            response.raise_for_status()
 
-        # If the response is successful, return the JSON data
-        return response.json()
+            # If the response is successful, return the JSON data
+            return response.json()
 
-    except requests.exceptions.HTTPError as http_err:
-        # Regardless of the specific error, raise an exception with the message "Daily limit reached"
-        raise Exception("Daily limit reached") from http_err
+        except requests.exceptions.HTTPError as http_err:
+            # Regardless of the specific error, raise an exception with the message "Daily limit reached"
+            raise Exception("Daily limit reached") from http_err
 
         
     
