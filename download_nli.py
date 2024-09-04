@@ -1,13 +1,13 @@
-# This is currently broken, do not run; please read the README.md for instructions on how to download the model
 import os
-from transformers import AutoModel
+import requests
 
 # Set the cache directory
 cache_dir = 'nli'
-os.environ['TRANSFORMERS_CACHE'] = cache_dir
+os.makedirs(cache_dir, exist_ok=True)
 
-model_name = 'ctu-aic/xlm-roberta-large-squad2-ctkfacts_nli'
-model_path = os.path.join(cache_dir, 'pytorch_model.bin')
+# URL of the model file
+model_url = 'https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7/resolve/main/model.safetensors'
+model_path = os.path.join(cache_dir, 'model.safetensors')
 
 # Check if the model is already downloaded
 if os.path.exists(model_path):
@@ -15,7 +15,8 @@ if os.path.exists(model_path):
 else:
     print("Downloading model...")
     # Download the model
-    model = AutoModel.from_pretrained(model_name)
-    # Save the model to the cache directory
-    model.save_pretrained(cache_dir)
+    response = requests.get(model_url)
+    response.raise_for_status()  # Ensure we notice bad responses
+    with open(model_path, 'wb') as f:
+        f.write(response.content)
     print("Model downloaded to", model_path)
