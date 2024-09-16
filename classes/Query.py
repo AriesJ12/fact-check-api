@@ -27,7 +27,7 @@ class Query:
         
         deepseek_api_key = os.getenv('DEEPSEEK_API_KEY')
         if not deepseek_api_key:
-            raise ValueError("DEEPSEEK_API_KEY environment variable is not set")
+            raise ValueError("Error accessing backend API")
         
         try:
             client = OpenAI(api_key=deepseek_api_key, base_url="https://api.deepseek.com")
@@ -63,7 +63,7 @@ class Query:
             parsed_response = json.loads(completion.choices[0].message.content)
             return parsed_response
         except Exception as e:
-            raise Exception(str(e))
+            raise Exception("Error accessing backend API")
         
         
         # json_response = f"""
