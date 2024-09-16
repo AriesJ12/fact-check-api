@@ -1,6 +1,6 @@
 from transformers import pipeline
 from classes.Counter import Counter
-
+import torch
 class ClaimDetection:
     _instance = None
     _classifier = None
@@ -8,7 +8,8 @@ class ClaimDetection:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(ClaimDetection, cls).__new__(cls)
-            cls._classifier = pipeline("zero-shot-classification", model="./nli")
+            device = 0 if torch.cuda.is_available() else -1
+            cls._classifier = pipeline("zero-shot-classification", model="./nli", device=device)
         return cls._instance
     
 
@@ -19,7 +20,8 @@ class ClaimDetection:
         counter_instance.update_counter()
         """returns yes or no"""
         if ClaimDetection._classifier is None:
-            ClaimDetection._classifier = pipeline("zero-shot-classification", model="./nli")
+            device = 0 if torch.cuda.is_available() else -1
+            ClaimDetection._classifier = pipeline("zero-shot-classification", model="./nli", device=device)
         # Define the text to classify and candidate labels
         sequence_to_classify = text
         candidate_labels = ["health", "non-health"]
