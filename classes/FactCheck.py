@@ -7,7 +7,6 @@ from .Premise import Premise
 import os
 from dotenv import load_dotenv
 
-from urllib.parse import urlparse
 
 from classes.Counter import Counter
 load_dotenv()
@@ -17,9 +16,6 @@ class FactCheckResult:
         self.premises = []
         self.query = query
         self.hypothesis = hypothesis
-        self.session = requests.Session()
-        self.session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'})
-        self.last_url = None
     
     def __add_premise(self, premise, url, title, date):
         hypothesis = self.hypothesis
@@ -31,7 +27,7 @@ class FactCheckResult:
         results = self.__google_custom_search(query)
         if "items" in results:
             init_premises = 0
-            MAX_PREMISES = 8
+            MAX_PREMISES = 10
             for item in results["items"]:
                 if init_premises >= MAX_PREMISES:
                     break
