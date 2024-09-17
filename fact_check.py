@@ -114,9 +114,14 @@ def main_fact_check(text):
     except Exception as e:
       print(e)
       return {"result" : str(e)}
+    
+
+    if not claimsPairs:
+      return {"result": "No claim detected"}
+    
     maxClaimsToCheck = 5
     FactCheckResultJson = []
-    
+
     for i in range(min(maxClaimsToCheck, len(claimsPairs))):
         query = claimsPairs[i]['query']
         claim = claimsPairs[i]['claim']
