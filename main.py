@@ -5,13 +5,13 @@ from classes.NLISingleton import NLISingleton
 from classes.ClaimDetection import ClaimDetection
 
 # rosgen
-# import os
-# import io
-# import uvicorn
-# import pytesseract
-# from PIL import Image
-# import image_preprocessing as processing
-# import numpy as np
+import os
+import io
+import uvicorn
+import pytesseract
+from PIL import Image
+import image_preprocessing as processing
+import numpy as np
 
 '''
 Install Tesseract OCR for Windows
@@ -84,47 +84,47 @@ async def claim_detection(content:str):
 OCR
 '''
 
-# @app.post("/api/v1/extract_text_from_url")
-# async def extract_text_from_url(url: str):
-#     try:
-#         response = requests.get(url)
-#         if response.status_code != 200:
-#             raise HTTPException(status_code=422, detail="Invalid image URL")
-#         image = Image.open(io.BytesIO(response.content))
-#         text = pytesseract.image_to_string(image)
-#         return {"text": text.replace("\n", " ").strip()}
-#     except Exception as e:
-#         raise HTTPException(status_code=422, detail=str(e))
+@app.post("/api/v1/extract_text_from_url")
+async def extract_text_from_url(url: str):
+    try:
+        response = requests.get(url)
+        if response.status_code != 200:
+            raise HTTPException(status_code=422, detail="Invalid image URL")
+        image = Image.open(io.BytesIO(response.content))
+        text = pytesseract.image_to_string(image)
+        return {"text": text.replace("\n", " ").strip()}
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
-# @app.get("/api/v1/ocr")
-# async def ocr(image_url: str):
+@app.get("/api/v1/ocr")
+async def ocr(image_url: str):
 
-#     try:
-#         response = requests.get(image_url)
-#         if response.status_code != 200:
-#             raise HTTPException(status_code=422, detail="Invalid image URL")
+    try:
+        response = requests.get(image_url)
+        if response.status_code != 200:
+            raise HTTPException(status_code=422, detail="Invalid image URL")
         
-#         # image = Image.open(io.BytesIO(response.content))
+        # image = Image.open(io.BytesIO(response.content))
         
-#         # Create a byte string buffer
-#         byte_string = io.BytesIO(response.content)
+        # Create a byte string buffer
+        byte_string = io.BytesIO(response.content)
         
-#         # Validate image
-#         try:
-#             image = Image.open(byte_string)
-#         except:
-#             raise read_exception("Invalid image file")
+        # Validate image
+        try:
+            image = Image.open(byte_string)
+        except:
+            raise read_exception("Invalid image file")
 
-#         # Convert image to numpy array
-#         image_array = np.asarray(image)
+        # Convert image to numpy array
+        image_array = np.asarray(image)
 
 
-#         # text = pytesseract.image_to_string(image)
-#         text: str = processing.apply_image_processing(image_array)
+        # text = pytesseract.image_to_string(image)
+        text: str = processing.apply_image_processing(image_array)
         
-#         return {"text": text.replace("\n", " ").strip()}
-#     except Exception as e:
-#         raise HTTPException(status_code=422, detail=str(e))
+        return {"text": text.replace("\n", " ").strip()}
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
 
 '''
