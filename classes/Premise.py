@@ -7,16 +7,17 @@ class Premise:
         NLISingleton()  # This line ensures the model is initialized
         self.hypothesis = hypothesis
         self.premises = []
-        self.relationship = []
     
     def add_premise(self, premise, url, title, date):
         temp_premise = {
             'premise': premise,
             'url': url,
             'title': title,
-            'date': date
+            'date': date,
+            'relationship': None  # Initialize with None
         }
         self.premises.append(temp_premise)
+        return
 
     def determine_all_relationship_premise_hypothesis(self):
         tokenizer = NLISingleton.get_tokenizer()
@@ -28,7 +29,7 @@ class Premise:
 
         hypotheses = [hypothesis] * len(premises)
         inputs = tokenizer(premises, hypotheses, return_tensors='pt', padding=True, truncation=True)
-    
+
         # Move inputs to the device (CPU)
         inputs = {key: value.to(device) for key, value in inputs.items()}
         
@@ -43,9 +44,11 @@ class Premise:
         # Label mapping for NLI
         label_names = ["entailment", "neutral", "contradiction"]
         
-        for i,probs in probabilities:
+        # Iterate over the probabilities with index
+        for i, probs in enumerate(probabilities):
             label_idx = torch.argmax(probs).item()
             self.premises[i]['relationship'] = label_names[label_idx]
+        return
         
     def get_all_premises_with_relationship(self):
         return self.premises
