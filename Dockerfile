@@ -22,8 +22,8 @@ COPY . /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 
-# Download the NLI model
-RUN python download_nli.py
+# Download the NLI model --- do not run this, its still being fixed
+# RUN python download_nli.py
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
