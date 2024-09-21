@@ -117,7 +117,7 @@ def main_fact_check(text):
     
 
     if not claimsPairs:
-      return {"result": "No claim detected"}
+      return {"result": "No health claim detected"}
     
     maxClaimsToCheck = 5
     FactCheckResultJson = []
