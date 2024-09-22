@@ -113,9 +113,8 @@ def main_fact_check(text):
       claimsPairs = Query.query_builder(text)
     except Exception as e:
       print(e)
-      return {"result" : str(e)}
+      return {"result" : "Server is currently down. Please try again later."}
     
-
     if not claimsPairs:
       return {"result": "No health claim detected"}
     
@@ -123,15 +122,16 @@ def main_fact_check(text):
     FactCheckResultJson = []
 
     for i in range(min(maxClaimsToCheck, len(claimsPairs))):
-        query = claimsPairs[i]['query']
-        claim = claimsPairs[i]['claim']
-        factClass = FactCheckResult(query=query, hypothesis=claim)
         try:
+          query = claimsPairs[i]['query']
+          claim = claimsPairs[i]['claim']
+
+          factClass = FactCheckResult(query=query, hypothesis=claim)
           factClass.get_All_Premises()
+          FactCheckResultJson.append(factClass.to_json())
         except Exception as e:
           print(e)
           return {"result" : str(e)}
-        FactCheckResultJson.append(factClass.to_json())
     # return the list of FactCheckResult objects
     
     return {"result": FactCheckResultJson}

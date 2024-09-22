@@ -31,12 +31,12 @@ class FactCheckResult:
                     break
                 url = item["link"]
                 title = item.get("title", "No title available")
-        
+
                 date = "No date available"
                 if "pagemap" in item:
                     pagemap = item["pagemap"]
                     if "metatags" in pagemap and len(pagemap["metatags"]) > 0:
-                        date = pagemap["metatags"][0].get("article:published_time", date)
+                        date = pagemap["metatags"][0].get("citation_publication_date", date)
                     elif "newsarticle" in pagemap and len(pagemap["newsarticle"]) > 0:
                         date = pagemap["newsarticle"][0].get("datepublished", date)
 
@@ -47,7 +47,7 @@ class FactCheckResult:
                     self.__add_premise(premise=sentences, url=url, title=title, date=date)
                     init_premises += 1
             
-            return self.premiseClass.determine_all_relationship_premise_hypothesis()
+            self.premiseClass.determine_all_relationship_premise_hypothesis()
 
     def __google_custom_search(self, query):
         counter_instance = Counter(db_file="google_calls.db", max_calls_per_day=80)
