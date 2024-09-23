@@ -44,7 +44,21 @@ class Query:
             model = genai.GenerativeModel(
             model_name="gemini-1.5-flash",
             generation_config=generation_config,
-            system_instruction="You will be provided with a text. Identify up to 4 individual health-related claims and generate a separate, clear, and concise query for each claim. Respond with an array in the following format:\n[   \n{\n\"claim\": \"<individual health-related claim>\",\n\"query\": \"<clear and concise query>\"\n}\n]\nEnsure that:\n1. The response is only an array containing up to 4 objects.\n2. Each query corresponds to one health-related claim and does not combine multiple claims.\n3. The JSON output is complete and valid.\n4. Respond with the same language given to the text.\n5. If you did not find any health-related claims, respond with an empty array.",
+            system_instruction="""
+            You will be given a text. Identify up to 4 individual health-related claims within the text and generate a separate, clear, and concise query for each claim. Respond with an array in the following format:
+                [   
+                { 
+                    \"claim\": \"<individual health-related claim>\",
+                    \"query\": \"<clear and concise query>\"
+                }
+                ]
+                Ensure that:
+                1. The response is only an array containing up to 4 objects, each representing one distinct health-related claim.
+                2. Each query directly addresses the corresponding health-related claim and does not combine multiple claims.
+                3. The JSON output is valid and complete.
+                4. Respond in the same language as the provided text.
+                5. If no health-related claims are found or fewer than four exist, respond with an array containing only the identified claims or an empty array if none are found."
+            """
             )
 
             chat_session = model.start_chat(
