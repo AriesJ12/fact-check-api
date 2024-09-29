@@ -88,7 +88,7 @@ class ElasticQueries:
         sem_results = [hit["_source"] for hit in sem_response["hits"]["hits"]]
 
         return {
-            "semantic_results": sem_results
+            "result": sem_results
         }
 
     @classmethod
