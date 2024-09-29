@@ -29,14 +29,14 @@ class ElasticQueries:
     def __get_tokenizer(cls):
         if cls.__tokenizer is None:
             print("Loading tokenizer...")
-            cls.__tokenizer = AutoTokenizer.from_pretrained('intfloat/multilingual-e5-small')
+            cls.__tokenizer = AutoTokenizer.from_pretrained('./semantic_model')  # Load from local directory
         return cls.__tokenizer
 
     @classmethod
     def __get_model(cls):
         if cls.__model is None:
             print("Loading model...")
-            cls.__model = AutoModel.from_pretrained('intfloat/multilingual-e5-small')
+            cls.__model = AutoModel.from_pretrained('./semantic_model')  # Load from local directory
             cls.__model.eval()  # Set the model to evaluation mode
         return cls.__model
 
@@ -100,7 +100,16 @@ class ElasticQueries:
                         "hypothesis": {"type": "text"},
                         "query": {"type": "text"},
                         "query_vector": {"type": "dense_vector", "dims": 768, "index": True, "similarity": "cosine"},
-                        "premises": {"type": "text"}
+                        "premises": {
+                            "type": "nested",
+                            "properties": {
+                                "premise": {"type": "text"},
+                                "relationship": {"type": "text"},
+                                "url": {"type": "text"},
+                                "title": {"type": "text"},
+                                "date": {"type": "text"}
+                            }
+                        }
                     }
                 }
             }
@@ -108,4 +117,3 @@ class ElasticQueries:
             print(f"Index '{cls.index_name}' created.")
         else:
             print(f"Index '{cls.index_name}' already exists.")
-
