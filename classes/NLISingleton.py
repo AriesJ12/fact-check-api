@@ -9,6 +9,7 @@ class NLISingleton:
 
     def __new__(cls, model_path='./nli'):
         if cls._instance is None:
+            print("Loading nli model...")
             cls._instance = super(NLISingleton, cls).__new__(cls)
             # Ensure the model is correctly loaded here
             cls._model = AutoModelForSequenceClassification.from_pretrained(model_path)

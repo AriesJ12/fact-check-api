@@ -7,6 +7,7 @@ class ClaimDetection:
 
     def __new__(cls):
         if cls._instance is None:
+            print("Loading zero shot model...")
             cls._instance = super(ClaimDetection, cls).__new__(cls)
             device = 0 if torch.cuda.is_available() else -1
             cls._classifier = pipeline("zero-shot-classification", model="./nli", device=device)

@@ -13,6 +13,7 @@ class ElasticQueries:
     __model = None
     __es_instance = None
     __index_created = False  # To track index creation
+    __index_name = "past_queries"
 
     def __init__(self, index_name="past_queries"):
         self.index_name = index_name
@@ -49,6 +50,7 @@ class ElasticQueries:
             cls.__es_instance = Elasticsearch(
                 url,
                 basic_auth=("elastic", api_key),
+                verify_certs=False
             )
         return cls.__es_instance
 
@@ -93,7 +95,7 @@ class ElasticQueries:
 
     @classmethod
     def __create_index(cls):
-        if not cls.__es_instance.indices.exists(index=cls.__es_instance.index_name):
+        if not cls.__es_instance.indices.exists(index=cls.__index_name):
             index_body = {
                 "mappings": {
                     "properties": {
@@ -113,7 +115,7 @@ class ElasticQueries:
                     }
                 }
             }
-            cls.__es_instance.indices.create(index=cls.index_name, body=index_body)
-            print(f"Index '{cls.index_name}' created.")
+            cls.__es_instance.indices.create(index=cls.__index_name, body=index_body)
+            print(f"Index '{cls.__index_name}' created.")
         else:
-            print(f"Index '{cls.index_name}' already exists.")
+            print(f"Index '{cls.__index_name}' already exists.")
