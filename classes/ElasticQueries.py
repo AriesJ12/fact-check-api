@@ -101,7 +101,7 @@ class ElasticQueries:
                     "properties": {
                         "hypothesis": {"type": "text"},
                         "query": {"type": "text"},
-                        "query_vector": {"type": "dense_vector", "dims": 768, "index": True, "similarity": "cosine"},
+                        "query_vector": {"type": "dense_vector", "dims": 384, "index": True, "similarity": "cosine"},
                         "premises": {
                             "type": "nested",
                             "properties": {
