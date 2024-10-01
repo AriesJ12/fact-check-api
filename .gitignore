@@ -2,8 +2,6 @@
 nli/pytorch_model.bin
 nli/model.safetensors
 
-semantic_model/pytorch_model.bin
-semantic_model/model.safetensors
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

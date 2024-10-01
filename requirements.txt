@@ -1,5 +1,4 @@
 --find-links https://download.pytorch.org/whl/torch_stable.html
-elasticsearch==8.15.1
 fastapi== 0.111.0
 
 google-generativeai==0.8.1
