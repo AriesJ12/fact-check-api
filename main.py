@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fact_check import main_fact_check, main_fact_check_without_query, main_claim_detection
 from classes.NLISingleton import NLISingleton
 from classes.ClaimDetection import ClaimDetection
-from classes.ElasticQueries import ElasticQueries
+from classes.ElasticPastQueries import ElasticPastQueries
 
 # rosgen
 import os
@@ -51,7 +51,6 @@ async def start_up():
     # comment this when deploying
     nlisingleton = NLISingleton()
     claimdetection = ClaimDetection()
-    elasticqueries = ElasticQueries()
 
 @app.get("/")
 async def root():
@@ -86,7 +85,7 @@ async def claim_detection(content:str):
 @app.get("/api/v1/searchPastQueries")
 async def search_past_queries(content:str):
     try:
-        elastic = ElasticQueries()
+        elastic = ElasticPastQueries()
         return elastic.search_past_queries(content)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

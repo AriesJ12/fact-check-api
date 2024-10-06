@@ -2,7 +2,7 @@ from classes.ClaimDetection import ClaimDetection
 from classes.FactCheck import FactCheckResult
 from classes.Query import Query
 from classes.TokenCounter import TokenCounter
-from classes.ElasticQueries import ElasticQueries
+from classes.ElasticPastQueries import ElasticPastQueries
 
 """
 returns:
@@ -113,7 +113,7 @@ def main_fact_check(text, mode):
         return {"result" : "Invalid number of tokens"}
     try:
       claimsPairs = Query.query_builder(text)
-      elastic = ElasticQueries()
+      elastic = ElasticPastQueries()
     except Exception as e:
       print(e)
       return {"result" : "Server is currently down. Please try again later."}
@@ -205,7 +205,7 @@ def main_fact_check_without_query(text, mode):
 
     factClass = FactCheckResult(query=text, hypothesis=text, mode=mode)
     try:
-      elastic = ElasticQueries()
+      elastic = ElasticPastQueries()
       factClass.get_All_Premises()
     except Exception as e:
       print(e)
