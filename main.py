@@ -48,6 +48,7 @@ app.add_middleware(
 @app.on_event("startup")
 async def start_up():
     nltk.download("punkt")
+    # comment this when deploying
     nlisingleton = NLISingleton()
     claimdetection = ClaimDetection()
     elasticqueries = ElasticQueries()
@@ -58,18 +59,18 @@ async def root():
 
 
 @app.get("/api/v1/factCheck")
-async def fact_check(content: str):
+async def fact_check(content: str, mode: str):
     try:
-        result = main_fact_check(content)
+        result = main_fact_check(content, mode)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/api/v1/factCheckWithoutQueries")
-async def fact_check_without_query(content:str):
+async def fact_check_without_query(content: str, mode: str):
     try:
-        result = main_fact_check_without_query(content)
+        result = main_fact_check_without_query(content, mode)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -11,7 +11,7 @@ expected result,
 {result: Daily limit reached},
 {result: error} 
 """
-def main_fact_check(text):
+def main_fact_check(text, mode):
     """expected result:
         const sampleFact = {
         result: [
@@ -104,7 +104,9 @@ def main_fact_check(text):
       };
 
     """
-    
+    POSSIBLE_MODES = ["onlineDatabase", "google"]
+    if mode not in POSSIBLE_MODES:
+        return {"result" : "Invalid mode"}
     MAX_TOKENS = 150
     is_in_range_token = TokenCounter.is_in_range_text(text=text, max_tokens=MAX_TOKENS)
     if (not is_in_range_token):
@@ -127,7 +129,7 @@ def main_fact_check(text):
           query = claimsPairs[i]['query']
           claim = claimsPairs[i]['claim']
 
-          factClass = FactCheckResult(query=query, hypothesis=claim)
+          factClass = FactCheckResult(query=query, hypothesis=claim, mode=mode)
           factClass.get_All_Premises()
           FactCheckResultJson.append(factClass.to_json())
           document = {
@@ -152,7 +154,7 @@ expected result,
 {result: Daily limit reached},
 {result: error} 
 """
-def main_fact_check_without_query(text):
+def main_fact_check_without_query(text, mode):
     """expected result:
     [
         {
@@ -185,7 +187,9 @@ def main_fact_check_without_query(text):
         },
     ];
     """
-    
+    POSSIBLE_MODES = ["onlineDatabase", "google"]
+    if mode not in POSSIBLE_MODES:
+        return {"result" : "Invalid mode"}
     # check max tokens
     MAX_TOKENS = 50
     is_in_range_token = TokenCounter.is_in_range_text(text=text, max_tokens=MAX_TOKENS)
@@ -199,7 +203,7 @@ def main_fact_check_without_query(text):
     if not is_health_claim == "yes":
         return {"result" : "error"}
 
-    factClass = FactCheckResult(query=text, hypothesis=text)
+    factClass = FactCheckResult(query=text, hypothesis=text, mode=mode)
     try:
       elastic = ElasticQueries()
       factClass.get_All_Premises()
