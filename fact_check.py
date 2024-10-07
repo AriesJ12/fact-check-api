@@ -151,7 +151,7 @@ def main_fact_check(text, mode):
       "mode": mode,
       "results": FactCheckResultJson
     }
-    elastic.index_document(document)
+    elastic.index_document_bigqueries(document)
     return {"result": FactCheckResultJson}
 
 
@@ -199,7 +199,17 @@ def main_fact_check_without_query(text, mode):
     POSSIBLE_MODES = ["onlineDatabase", "google"]
     if mode not in POSSIBLE_MODES:
         return {"result" : "Invalid mode"}
+    try:
+      # check max tokens
+      elastic = ElasticPastQueries()
+      pastResults = elastic.strict_search_past_results_only(text, mode)
+      if pastResults:
+        return pastResults
+    except Exception as e:
+      print(e)
+      return {"result" : "Server is currently down. Please try again later."}
     # check max tokens
+
     MAX_TOKENS = 50
     is_in_range_token = TokenCounter.is_in_range_text(text=text, max_tokens=MAX_TOKENS)
     if (not is_in_range_token):
@@ -219,6 +229,14 @@ def main_fact_check_without_query(text, mode):
       print(e)
       return {"result" : str(e)}
     
+    document = {
+      "hypothesis": text,
+      "query": text,
+      "mode": mode,
+      "premises": factClass.get_processed_premises()
+    }
+
+    elastic.index_document_smallqueries(document)
     return factClass.get_processed_premises()
 
 

@@ -89,7 +89,7 @@ async def search_past_queries(content:str, mode:str):
         return {"result": "Invalid mode. Mode must be 'google' or 'onlineDatabase'"}
     try:
         elastic = ElasticPastQueries()
-        return elastic.search_results_only(content)
+        return elastic.search_past_results_only(content, mode)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 '''
