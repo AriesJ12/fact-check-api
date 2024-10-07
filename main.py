@@ -83,10 +83,13 @@ async def claim_detection(content:str):
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.get("/api/v1/searchPastQueries")
-async def search_past_queries(content:str):
+async def search_past_queries(content:str, mode:str):
+    POSSIBLE_MODES = ["google", "onlineDatabase"]
+    if mode not in POSSIBLE_MODES:
+        return {"result": "Invalid mode. Mode must be 'google' or 'onlineDatabase'"}
     try:
         elastic = ElasticPastQueries()
-        return elastic.search_past_queries(content)
+        return elastic.search_results_only(content)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 '''

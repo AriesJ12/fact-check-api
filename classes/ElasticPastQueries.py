@@ -26,7 +26,7 @@ class ElasticPastQueries:
         return response
 
     # 2. Function to search whole document by matching `mode` and `bigquery`
-    def search_whole_document(self, bigquery, mode):
+    def __search_whole_document(self, bigquery, mode):
         index_name = self.index_name
         
         # Validate the mode
@@ -58,6 +58,16 @@ class ElasticPastQueries:
         else:
             return None  # No matching document found
 
+    def format_search_past_big_queries(self, bigquery, mode):
+        # Retrieve the whole document based on the bigquery and mode
+        document = self.__search_whole_document(bigquery, mode)
+        
+        # If the document exists and has the "results" key, return only that
+        if document and "results" in document:
+            return document["results"]
+        
+        # If no matching document or "results" key is not present, return None
+        return None
 
     # 3. Function to search and return only the `results` items (filtered by mode, hypothesis, and query) using BM25
     def search_results_only(self, search_query, mode):
@@ -105,7 +115,7 @@ class ElasticPastQueries:
                 }
                 results_only.append(result_entry)
 
-        return results_only
+        return {"result": results_only}
 
 
     def create_index(self, index_name="past_big_queries"):

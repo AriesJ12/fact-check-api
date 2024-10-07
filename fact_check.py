@@ -106,14 +106,24 @@ def main_fact_check(text, mode):
     """
     POSSIBLE_MODES = ["onlineDatabase", "google"]
     if mode not in POSSIBLE_MODES:
-        return {"result" : "Invalid mode"}
+      return {"result" : "Invalid mode"}
+    # check past queries
+    try:
+      # check max tokens
+      elastic = ElasticPastQueries()
+      pastResults = elastic.format_search_past_big_queries(text, mode)
+      if pastResults:
+        return {"result": pastResults}
+    except Exception as e:
+      print(e)
+      return {"result" : "Server is currently down. Please try again later."}
+    
     MAX_TOKENS = 150
     is_in_range_token = TokenCounter.is_in_range_text(text=text, max_tokens=MAX_TOKENS)
     if (not is_in_range_token):
         return {"result" : "Invalid number of tokens"}
     try:
       claimsPairs = Query.query_builder(text)
-      elastic = ElasticPastQueries()
     except Exception as e:
       print(e)
       return {"result" : "Server is currently down. Please try again later."}
@@ -132,17 +142,16 @@ def main_fact_check(text, mode):
           factClass = FactCheckResult(query=query, hypothesis=claim, mode=mode)
           factClass.get_All_Premises()
           FactCheckResultJson.append(factClass.to_json())
-          document = {
-              "hypothesis": claim,
-              "query": query,
-              "premises": factClass.get_processed_premises()
-          }
-          elastic.index_document(document)
         except Exception as e:
           print(e)
           return {"result" : str(e)}
     # return the list of FactCheckResult objects
-    
+    document = {
+      "bigquery": text,
+      "mode": mode,
+      "results": FactCheckResultJson
+    }
+    elastic.index_document(document)
     return {"result": FactCheckResultJson}
 
 
@@ -205,18 +214,11 @@ def main_fact_check_without_query(text, mode):
 
     factClass = FactCheckResult(query=text, hypothesis=text, mode=mode)
     try:
-      elastic = ElasticPastQueries()
       factClass.get_All_Premises()
     except Exception as e:
       print(e)
       return {"result" : str(e)}
     
-    document = {
-        "hypothesis": text,
-        "query": text,
-        "premises": factClass.get_processed_premises()
-    }
-    elastic.index_document(document)
     return factClass.get_processed_premises()
 
 
