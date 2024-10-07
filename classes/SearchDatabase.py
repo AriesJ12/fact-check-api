@@ -36,7 +36,7 @@ class SearchDatabase:
     def __elastic_search(self, query):
         index_name = "medical_articles"
         username = "elastic"
-        api_key = os.getenv("ELASTIC_API_KEY")
+        api_key = os.getenv("ELASTIC_PASSWORD")
         url = os.getenv("ELASTIC_URL")
         es = Elasticsearch(
             url,
@@ -44,7 +44,7 @@ class SearchDatabase:
             verify_certs=False
         )
         # change this
-        txt_file_path = "./../asset/new_extracted_terms.txt"
+        txt_file_path = "./asset/new_extracted_terms.txt"
         
         # Step 1: Read the content of the text file
         try:
@@ -73,13 +73,12 @@ class SearchDatabase:
         for word in words:
             # Use word boundaries to match whole words only
             if re.search(r'\b' + re.escape(word) + r'\b', query_lower):
-                print(f"Matched word: {word}")
                 # Step 5: Proceed with the Elasticsearch query
                 body = {
                     "query": {
                         "query_string": {
                             "query": query,
-                            "fields": ["title", "fullSummary"]
+                            "fields": ["title","altTitles", "fullSummary", "meshTerms", "groupNames"]
                         }
                     },
                     "highlight": {
@@ -129,14 +128,28 @@ class SearchDatabase:
                 "title": doc.get("title", "No title available"),
                 "date": doc.get("date", "No date available")
             })
-        pass
+        return formatted_results
     
     def __generate_better_snippets(self, claim, paragraph):
-        top_k=3
-        batch_size=8
+        top_k = 3
+        batch_size = 8
+
         # Load the transformer model and tokenizer.
         model_name = './semantic_model'
-        tokenizer, model = self.__load_transformer_model(model_name)
+        self.__load_transformer_model(model_name)
+        tokenizer = self._tokenizer
+        model = self._model
+
+        # Handle both string and dict for paragraph
+        if isinstance(paragraph, dict):
+            # Assuming the relevant text is in 'fullSummary' key
+            full_summary = paragraph.get('fullSummary', [])
+            if isinstance(full_summary, list):
+                paragraph = ' '.join(full_summary)  # Join list into a single string
+            else:
+                paragraph = str(full_summary)  # Convert to string if not a list
+        elif not isinstance(paragraph, str):
+            raise TypeError("Paragraph should be a string or a dictionary containing a string.")
 
         # Tokenize the paragraph into sentences.
         sentences = sent_tokenize(paragraph)
@@ -177,8 +190,9 @@ class SearchDatabase:
 
         # Concatenate the top sentences into a single string.
         better_snippet = ' '.join(top_sentences)
-
+        
         return better_snippet
+
 
     @classmethod
     def __load_transformer_model(cls, model_name):

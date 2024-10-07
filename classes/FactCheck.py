@@ -25,14 +25,11 @@ class FactCheckResult:
             title = item.get("title", "No title available")
             date = item.get("date", "No date available")
             snippets = item["premise"]
-
-            if snippets:
-                for snippet in snippets:
-                    if snippet.strip():
-                        self.__add_premise(premise=snippet, url=url, title=title, date=date)
-                        init_premises += 1
-                        if init_premises >= MAX_PREMISES:
-                            break
+            if snippets.strip():
+                self.__add_premise(premise=snippets, url=url, title=title, date=date)
+                init_premises += 1
+                if init_premises >= MAX_PREMISES:
+                    break
 
         self.premiseClass.determine_all_relationship_premise_hypothesis()
 
