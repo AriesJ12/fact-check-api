@@ -120,7 +120,7 @@ class ElasticPastQueries:
                                 "path": "results",
                                 "query": {
                                     "bool": {
-                                        "must": [
+                                        "should": [
                                             {"match": {"results.hypothesis": search_query}},  # BM25 match on hypothesis
                                             {"match": {"results.query": search_query}}       # BM25 match on query
                                         ]
