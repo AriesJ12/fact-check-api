@@ -133,7 +133,7 @@ def main_fact_check(text, mode):
     
     maxClaimsToCheck = 5
     FactCheckResultJson = []
-
+    resultDocument = []
     for i in range(min(maxClaimsToCheck, len(claimsPairs))):
         try:
           query = claimsPairs[i]['query']
@@ -142,6 +142,11 @@ def main_fact_check(text, mode):
           factClass = FactCheckResult(query=query, hypothesis=claim, mode=mode)
           factClass.get_All_Premises()
           FactCheckResultJson.append(factClass.to_json())
+          resultDocument.append({
+            "hypothesis": claim,
+            "query": query,
+            "premises": factClass.get_processed_premises()
+          })
         except Exception as e:
           print(e)
           return {"result" : str(e)}
@@ -149,7 +154,7 @@ def main_fact_check(text, mode):
     document = {
       "bigquery": text,
       "mode": mode,
-      "results": FactCheckResultJson
+      "results": resultDocument
     }
     elastic.index_document_bigqueries(document)
     return {"result": FactCheckResultJson}
