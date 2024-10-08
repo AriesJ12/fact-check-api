@@ -143,7 +143,7 @@ def main_fact_check(text, mode):
           factClass.get_All_Premises()
           FactCheckResultJson.append(factClass.to_json())
           resultDocument.append({
-            "hypothsis": claim,
+            "hypothesis": claim,
             "query": query,
             "premises": factClass.get_processed_premises()
           })

@@ -79,11 +79,11 @@ class ElasticPastQueries:
     def search_past_results_only(self, search_query, mode):
         # Get results from both big and small queries indices
         big_results = self.__search_results_only_big_queries(search_query, mode)
-        small_results = self.__search_results_only_small_queries(search_query, mode)
+        # small_results = self.__search_results_only_small_queries(search_query, mode)
 
         # Combine the results from both indices
-        combined_results = big_results + small_results
-
+        # combined_results = big_results + small_results
+        combined_results = big_results
         return {"result": combined_results}
 
     # for small queries searching -- only returns the premises(used for retrieving past results before fact checking)
