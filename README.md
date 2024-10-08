@@ -6,11 +6,6 @@
 
 - put it in the nli folder
 
-- download the model.safetensors in
-https://huggingface.co/intfloat/multilingual-e5-small/tree/main 
-
-- put it in the semantic_model folder
-
 - read elastic_instruction.md
 
 # run with docker

@@ -1,11 +1,6 @@
 import requests
 from elasticsearch import Elasticsearch, helpers
-import nltk
-from transformers import AutoTokenizer, AutoModel
-import torch
 import numpy as np
-from nltk.tokenize import sent_tokenize
-from torch.nn.functional import cosine_similarity
 import re
 import os
 from dotenv import load_dotenv
@@ -13,11 +8,8 @@ from dotenv import load_dotenv
 
 from classes.Counter import Counter
 load_dotenv()
-nltk.download('punkt')
 
 class SearchDatabase:
-    _tokenizer = None
-    _model = None
 
     def __init__(self, query, mode):
         self.query = query
@@ -112,16 +104,16 @@ class SearchDatabase:
                         results.append({'document': doc, 'snippets': None})
 
                 # Return results if at least one word matched
-                return self.__format_elastic_results(query=query, results=results)
+                return self.__format_elastic_results(results=results)
 
         # If no words matched, return an empty list
         return results
 
-    def __format_elastic_results(self,query, results):
+    def __format_elastic_results(self, results):
         formatted_results = []
         for result in results:
             doc = result["document"]
-            snippets = self.__generate_better_snippets(claim=query, paragraph=result["snippets"])
+            snippets = self.__generate_better_snippets(result["snippets"])
             formatted_results.append({
                 "premise": snippets,
                 "url": doc.get("url", "No URL available"),
@@ -130,76 +122,19 @@ class SearchDatabase:
             })
         return formatted_results
     
-    def __generate_better_snippets(self, claim, paragraph):
-        top_k = 3
-        batch_size = 8
-
-        # Load the transformer model and tokenizer.
-        model_name = './semantic_model'
-        self.__load_transformer_model(model_name)
-        tokenizer = self._tokenizer
-        model = self._model
-
-        # Handle both string and dict for paragraph
-        if isinstance(paragraph, dict):
+    def __generate_better_snippets(self, snippets):
+        # Handle both string and dict for snippets
+        if isinstance(snippets, dict):
             # Assuming the relevant text is in 'fullSummary' key
-            full_summary = paragraph.get('fullSummary', [])
+            full_summary = snippets.get('fullSummary', [])
             if isinstance(full_summary, list):
-                paragraph = ' '.join(full_summary)  # Join list into a single string
+                snippets = ' '.join(full_summary)  # Join list into a single string
             else:
-                paragraph = str(full_summary)  # Convert to string if not a list
-        elif not isinstance(paragraph, str):
-            raise TypeError("Paragraph should be a string or a dictionary containing a string.")
-
-        # Tokenize the paragraph into sentences.
-        sentences = sent_tokenize(paragraph)
-
-        # Check the number of sentences
-        num_sentences = len(sentences)
-
-        # If there are fewer sentences than top_k, adjust top_k
-        if num_sentences < top_k:
-            top_k = num_sentences
-
-        # Encode the claim into embeddings.
-        claim_inputs = tokenizer(claim, return_tensors='pt')
-        with torch.no_grad():
-            claim_embedding = model(**claim_inputs).last_hidden_state.mean(dim=1)
-
-        # Encode the sentences in batches.
-        sentence_embeddings = []
-        for i in range(0, num_sentences, batch_size):
-            batch_sentences = sentences[i:i + batch_size]
-            batch_inputs = tokenizer(batch_sentences, padding=True, truncation=True, return_tensors='pt')
-            with torch.no_grad():
-                batch_embeddings = model(**batch_inputs).last_hidden_state.mean(dim=1)
-            sentence_embeddings.append(batch_embeddings)
-
-        # Concatenate all the sentence embeddings.
-        sentence_embeddings = torch.cat(sentence_embeddings, dim=0)
-
-        # Calculate cosine similarity scores.
-        cos_scores = cosine_similarity(claim_embedding, sentence_embeddings)
-
-        # Get the top K results based on similarity scores.
-        top_results = torch.topk(cos_scores, k=top_k)
-
-        # Retrieve the indices of the top sentences and their scores.
-        top_indices = top_results[1].detach().cpu().numpy()
-        top_sentences = np.array(sentences)[top_indices]
-
-        # Concatenate the top sentences into a single string.
-        better_snippet = ' '.join(top_sentences)
+                snippets = str(full_summary)  # Convert to string if not a list
+        elif not isinstance(snippets, str):
+            raise TypeError("Snippets should be a string or a dictionary containing a string.")
         
-        return better_snippet
-
-
-    @classmethod
-    def __load_transformer_model(cls, model_name):
-        # Check if the model and tokenizer are already loaded.
-        if cls._tokenizer is None or cls._model is None:
-            cls._tokenizer = AutoTokenizer.from_pretrained(model_name)
-            cls._model = AutoModel.from_pretrained(model_name)
+        return snippets
 
     # google
     def __format_google_results(self, results):
