@@ -120,7 +120,7 @@ async def search_disputed_claims(content:str, mode:str = "onlineDatabase"):
                     elif premise.get("relationship") == "neutral":
                         neutral_count += 1
         if contradiction_count > entailment_count and contradiction_count > neutral_count:
-            return {"result": True}
+            return {"result": True, "claim": top_result}
         return {"result": False}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
