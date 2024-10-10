@@ -92,6 +92,40 @@ async def search_past_queries(content:str, mode:str):
         return elastic.search_past_results_only(content, mode)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/v1/checkClaimIfDisputed")
+async def search_disputed_claims(content:str, mode:str = "onlineDatabase"):
+    POSSIBLE_MODES = ["onlineDatabase"]
+    if mode not in POSSIBLE_MODES:
+        return {"result": "Invalid mode. Mode must be 'google' or 'onlineDatabase'"}
+    try:
+        elastic = ElasticPastQueries()
+        results = elastic.search_past_results_only(content, mode)
+        
+        # Initialize the counters
+        entailment_count = 0
+        contradiction_count = 0
+        neutral_count = 0
+        
+        result = results.get("result", [])
+        if result:
+            top_result = result[0]
+            if top_result.get("hypothesis"):
+                premises = top_result.get("premises", [])
+                for premise in premises:
+                    if premise.get("relationship") == "entailment":
+                        entailment_count += 1
+                    elif premise.get("relationship") == "contradiction":
+                        contradiction_count += 1
+                    elif premise.get("relationship") == "neutral":
+                        neutral_count += 1
+        if contradiction_count > entailment_count and contradiction_count > neutral_count:
+            return {"result": True}
+        return {"result": False}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 '''
 OCR
 '''
