@@ -110,7 +110,7 @@ async def search_disputed_claims(content:str, mode:str = "onlineDatabase"):
         result = results.get("result", [])
         if result:
             top_result = result[0]
-            if top_result.get("hypothesis"):
+            if top_result.get("hypothesis") == content:
                 premises = top_result.get("premises", [])
                 for premise in premises:
                     if premise.get("relationship") == "entailment":
