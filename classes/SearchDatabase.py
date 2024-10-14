@@ -35,15 +35,72 @@ class SearchDatabase:
             basic_auth=(username, api_key),
             verify_certs=False
         )
-        # change this
-        txt_file_path = "./asset/new_extracted_terms.txt"
-        
+
+        keywords_found = self.__get_keywords(query)
+
+        # Step 3: Initialize results
+        results = []
+
+        # Step 4: Proceed with the Elasticsearch query to search in specified fields
+        body = {
+            "query": {
+                "query_string": {
+                    "query": query,
+                    "fields": ["title", "altTitles", "fullSummary", "meshTerms", "groupNames"]
+                }
+            },
+            "highlight": {
+                "fields": {
+                    "fullSummary": {},
+                }
+            },
+            "sort": [
+                {"_score": {"order": "desc"}}  # Sort by relevance score
+            ]
+        }
+
+        try:
+            response = es.search(index=index_name, body=body)
+        except Exception as e:
+            print(f"Server Down on Online Database: {e}")
+            return []
+
+        # Step 5: Filter results based on additional words in specified fields
+        for hit in response['hits']['hits']:
+            # Get the original document
+            doc = hit['_source']
+            
+            # Check if any additional words are found in the relevant fields
+            if any(re.search(r'\b' + re.escape(word) + r'\b', ' '.join(doc.get(field, [])).lower() if isinstance(doc.get(field, []), list) else doc.get(field, '').lower()) for field in ['title', 'altTitles', 'groupNames', 'meshTerms'] for word in keywords_found):
+                # Add highlighted snippets if available
+                if 'highlight' in hit:
+                    highlighted_snippets = hit['highlight']
+                    # Remove HTML tags from snippets
+                    snippets = {field: [re.sub(r'<.*?>', '', snippet) for snippet in highlighted_snippets[field]] for field in highlighted_snippets}
+                    results.append({
+                        'document': doc,
+                        'snippets': snippets
+                    })
+                else:
+                    results.append({'document': doc, 'snippets': None})
+
+        # If any results matched, return the results
+        if results:
+            return self.__format_elastic_results(results=results)
+
+        # If no results matched, return an empty list
+        return []
+
+
+    
+    def __get_keywords(self, query):
+        TXT_FILE_PATH = "./asset/new_extracted_terms.txt"
         # Step 1: Read the content of the text file
         try:
-            with open(txt_file_path, 'r') as file:
+            with open(TXT_FILE_PATH, 'r') as file:
                 content = file.read()
         except FileNotFoundError:
-            print(f"File not found: {txt_file_path}")
+            print(f"File not found: {TXT_FILE_PATH}")
             return []
         except Exception as e:
             print(f"Error reading file: {e}")
@@ -56,58 +113,12 @@ class SearchDatabase:
         words = [word.lower() for word in words]
         
         # Convert query to lowercase
-        query_lower = query.lower()
+        query = query.lower()
         
-        # Step 3: Initialize results
-        results = []
-
-        # Step 4: Check if any of the words from the text file are in the query
-        for word in words:
-            # Use word boundaries to match whole words only
-            if re.search(r'\b' + re.escape(word) + r'\b', query_lower):
-                # Step 5: Proceed with the Elasticsearch query
-                body = {
-                    "query": {
-                        "query_string": {
-                            "query": query,
-                            "fields": ["title","altTitles", "fullSummary", "meshTerms", "groupNames"]
-                        }
-                    },
-                    "highlight": {
-                        "fields": {
-                            "fullSummary": {},
-                        }
-                    }
-                }
-
-                try:
-                    response = es.search(index=index_name, body=body)
-                except Exception as e:
-                    print(f"Server Down on Online Database")
-                    return []
-
-                # Extract hits and their highlighted snippets
-                for hit in response['hits']['hits']:
-                    # Get the original document
-                    doc = hit['_source']
-                    
-                    # Add highlighted snippets if available
-                    if 'highlight' in hit:
-                        highlighted_snippets = hit['highlight']
-                        # Remove HTML tags from snippets
-                        snippets = {field: [re.sub(r'<.*?>', '', snippet) for snippet in highlighted_snippets[field]] for field in highlighted_snippets}
-                        results.append({
-                            'document': doc,
-                            'snippets': snippets
-                        })
-                    else:
-                        results.append({'document': doc, 'snippets': None})
-
-                # Return results if at least one word matched
-                return self.__format_elastic_results(results=results)
-
-        # If no words matched, return an empty list
-        return results
+        # Step 3: Extract keywords from the query
+        query_words = re.findall(r'\b\w+\b', query)
+        keywords = [word for word in query_words if word in words]
+        return keywords
 
     def __format_elastic_results(self, results):
         formatted_results = []
