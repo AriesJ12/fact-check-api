@@ -99,28 +99,37 @@ async def search_disputed_claims(content:str, mode:str = "onlineDatabase"):
     if mode not in POSSIBLE_MODES:
         return {"result": "Invalid mode. Mode must be 'google' or 'onlineDatabase'"}
     try:
+        # Initialize elastic
         elastic = ElasticPastQueries()
-        results = elastic.search_past_results_only(content, mode)
+        # results = elastic.search_past_results_only(content, mode)
         
+        # Search past big queries 
+        results = elastic.format_search_past_big_queries(content, mode)
+
         # Initialize the counters
         entailment_count = 0
         contradiction_count = 0
         neutral_count = 0
         
-        result = results.get("result", [])
-        if result:
-            top_result = result[0]
-            if top_result.get("hypothesis") == content:
-                premises = top_result.get("premises", [])
-                for premise in premises:
-                    if premise.get("relationship") == "entailment":
-                        entailment_count += 1
-                    elif premise.get("relationship") == "contradiction":
-                        contradiction_count += 1
-                    elif premise.get("relationship") == "neutral":
-                        neutral_count += 1
+        # get the first result
+        result = results[0]
+       
+        # Check if the hypothesis matches the content 
+        if result and result.get("hypothesis") == content:
+            # Loop through the premises
+            for premise in result.get("premises"):
+                if premise.get("relationship") == "entailment":
+                    entailment_count += 1
+                elif premise.get("relationship") == "contradiction":
+                    contradiction_count += 1
+                elif premise.get("relationship") == "neutral":
+                    neutral_count += 1
+        
+        # Check if the contradiction count is greater than the entailment count and neutral count
         if contradiction_count > entailment_count and contradiction_count > neutral_count:
+            # Return true as the result
             return {"result": True}
+        # Return false if the contradiction count is not greater than the entailment count and neutral count
         return {"result": False}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
