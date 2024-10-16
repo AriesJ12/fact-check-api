@@ -56,8 +56,10 @@ class SearchDatabase:
             },
             "sort": [
                 {"_score": {"order": "desc"}}  # Sort by relevance score
-            ]
+            ],
+            "size": 20  # Limit the results to a maximum of 10
         }
+
 
         try:
             response = es.search(index=index_name, body=body)
