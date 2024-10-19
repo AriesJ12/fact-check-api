@@ -4,6 +4,8 @@ import numpy as np
 import re
 import os
 from dotenv import load_dotenv
+from rapidfuzz import fuzz  
+from nltk.stem import PorterStemmer
 
 
 from classes.Counter import Counter
@@ -89,7 +91,8 @@ class SearchDatabase:
             {
                 "multi_match": {
                     "query": keyword,
-                    "fields": ["meshTerms", "altTitles", "titles", "groupNames"]
+                    "fields": ["meshTerms", "altTitles", "titles", "groupNames"],
+                    "type": "phrase"
                 }
             }
             for keyword in keywords
@@ -107,7 +110,10 @@ class SearchDatabase:
                             }
                         },
                         {
-                            "match": { "fullSummary": query }
+                            "multi_match": {
+                                "query": query,
+                                "fields": ["title", "fullSummary"]
+                            }
                         }
                     ]
                 }
@@ -120,20 +126,36 @@ class SearchDatabase:
         }
     
     def __get_keywords(self, query):
-        """Load keywords from a specified file and return a list of found keywords in the query (case-insensitive)."""
-        file_path = 'keywords_output.txt'  # The file containing keywords (one keyword per line)
-        try:
-            # Load keywords into a set
-            with open(file_path, 'r') as file:
-                keywords = {line.strip() for line in file if line.strip()}  # Create a set from non-empty lines
+        def stem_words(keywords):
+            stemmer = PorterStemmer()
+            return [stemmer.stem(word) for word in keywords]
+        
+        filename = 'new_extracted_terms.txt'
+        # Load possible phrases from the file
+        with open(filename, 'r') as file:
+            possible_phrases = [line.strip() for line in file.readlines() if line.strip()]
 
-            # Find and return the keywords found in the query (case-insensitive)
-            found_keywords = [keyword for keyword in keywords if keyword.lower() in query.lower()]
-            return found_keywords
+        # Normalize and tokenize the input sentence
+        normalized_sentence = query.lower().replace('-', '')  # Remove hyphens
+        keywords = normalized_sentence.split()  # Split into words
+        stemmed_keywords = stem_words(keywords)  # Stem the keywords
 
-        except FileNotFoundError:
-            print(f"The file {file_path} does not exist.")
-            return []
+        matches = []
+
+        for phrase in possible_phrases:
+            # Normalize possible phrase
+            normalized_phrase = phrase.lower().replace('-', '')  # Remove hyphens
+            phrase_keywords = normalized_phrase.split()  # Split possible phrase into keywords
+            stemmed_phrase_keywords = stem_words(phrase_keywords)  # Stem the possible phrase keywords
+
+            # Calculate the similarity score using RapidFuzz
+            score = fuzz.token_set_ratio(normalized_sentence, normalized_phrase)
+            
+            # You can adjust the threshold as needed
+            if score > 50 and all(stemmed_keyword in stemmed_keywords for stemmed_keyword in stemmed_phrase_keywords):
+                matches.append(phrase)
+
+        return matches
 
 
     def __format_elastic_results(self, results):

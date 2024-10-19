@@ -26,9 +26,9 @@ Absence Seizures Generalized
 Acne
 Acne Vulgaris
 Acne vulgaris
+Acquired immune deficiency syndrome
 Acquired Immune Deficiency Syndrome Virus
 Acquired Immunodeficiency Syndrome Virus
-Acquired immune deficiency syndrome
 Acute Cerebrovascular Accident
 Acute Cerebrovascular Accidents
 Acute Confusional Migraine
@@ -45,6 +45,7 @@ Adenomas Thyroid
 Affective Psychosis Bipolar
 Airway Obstruction
 Akathisia
+Alzheimer
 Alzheimer disease dementia
 Amentia
 Amentias
@@ -132,6 +133,7 @@ Breast Tumor
 Breast Tumors
 Breathlessness
 Bronchial Asthma
+COVID
 COVID 19
 COVID-19
 COVID 19 Pandemic
@@ -272,6 +274,7 @@ Convulsions
 Convulsions NonEpileptic
 Convulsive Seizure
 Convulsive Seizures
+Coronavirus
 Coronavirus 2019
 Coronavirus Disease 19
 Coronavirus Disease 2019
@@ -771,6 +774,7 @@ Poliomyelitis Infections
 Poliomyelitis Nonpoliovirus
 Poliomyelitis Preparalytic
 Polios
+Postpolio
 Postpolio syndrome
 Prediabetic State
 Preparalytic Poliomyelitis
@@ -824,7 +828,9 @@ Respiratory Hypersensitivity
 Restless Leg Syndrome
 Restless Legs
 Restless Legs Syndrome
+Reston Ebola
 Reston Ebola Virus
+Retro Ocular
 Retro Ocular Headache
 RetroOcular Headache
 RetroOcular Headaches
@@ -835,6 +841,8 @@ RingingBuzzingTinnitus
 Routine urine test
 Rubor
 Ruptured Appendicitis
+SARS CoV
+SARS Coronavirus
 SARS CoV 2 Infection
 SARS Coronavirus 2 Infection
 SARSCoV2
@@ -1026,11 +1034,13 @@ Type 2 diabetes
 UTI urinalysis
 Unilateral Headache
 Unilateral Headaches
+Uric acid
 Uric acid stones
 Urinalyses
 Urinary lithiasis
 Urinary tract infection urinalysis
 Urine appearance and color
+Ursodeoxycholic
 Ursodeoxycholic acid UDCA ursodiol
 Vagina Cancer
 Vagina Cancers
