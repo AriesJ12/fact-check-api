@@ -130,7 +130,7 @@ class SearchDatabase:
             stemmer = PorterStemmer()
             return [stemmer.stem(word) for word in keywords]
         
-        filename = 'new_extracted_terms.txt'
+        filename = './asset/new_extracted_terms.txt'
         # Load possible phrases from the file
         with open(filename, 'r') as file:
             possible_phrases = [line.strip() for line in file.readlines() if line.strip()]

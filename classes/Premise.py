@@ -19,6 +19,8 @@ class Premise:
         self.premises.append(temp_premise)
 
     def determine_all_relationship_premise_hypothesis(self):
+        if not self.premises:
+            return
         tokenizer = NLISingleton.get_tokenizer()
         model = NLISingleton.get_model()
         device = NLISingleton.get_device()
