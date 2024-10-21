@@ -191,14 +191,22 @@ class SearchDatabase:
         if "items" in results:
             for item in results["items"]:
                 url = item["link"]
-                title = item.get("title", "No title available")
-                date = "No date available"
+                title = "No title available"  # Default title
+                date = "No date available"  # Default date
+
                 if "pagemap" in item:
                     pagemap = item["pagemap"]
+
+                    # Check for citation title first
                     if "metatags" in pagemap and len(pagemap["metatags"]) > 0:
-                        date = pagemap["metatags"][0].get("citation_publication_date", date)
+                        meta_tags = pagemap["metatags"][0]
+                        title = meta_tags.get("citation_title") or meta_tags.get("og:title") or meta_tags.get("dc:title") or title
+                        date = meta_tags.get("citation_publication_date", date)
+
+                    # If citation title is not available, check for newsarticle date
                     elif "newsarticle" in pagemap and len(pagemap["newsarticle"]) > 0:
                         date = pagemap["newsarticle"][0].get("datepublished", date)
+
                 snippet = item["snippet"]
                 formatted_results.append({
                     "premise": snippet,
@@ -207,6 +215,7 @@ class SearchDatabase:
                     "date": date
                 })
         return formatted_results
+
 
     def __google_custom_search(self, query):
         counter_instance = Counter(db_file="google_calls.db", max_calls_per_day=80)
