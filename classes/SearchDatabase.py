@@ -215,12 +215,14 @@ class SearchDatabase:
         cx = os.getenv("GOOGLE_SEARCH_ID")  # Replace with your own Custom Search Engine ID
         # Assuming google_custom_search function sends a GET request to the Google Custom Search JSON API
         maxResult = 10 # this is having an error, if its more than 10; it will break
+        removeDuplicates = 1
         url = "https://www.googleapis.com/customsearch/v1"
         params = {
             'q': query,
             'key': api_key,
             'cx': cx,
-            'num': maxResult
+            'num': maxResult,
+            'filter': removeDuplicates
         }
         try:
             response = requests.get(url, params=params)
