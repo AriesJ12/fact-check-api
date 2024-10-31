@@ -136,7 +136,10 @@ class SearchDatabase:
             possible_phrases = [line.strip() for line in file.readlines() if line.strip()]
 
         # Normalize and tokenize the input sentence
-        normalized_sentence = query.lower().replace('-', '')  # Remove hyphens
+        normalized_sentence = query.lower()  # Convert to lowercase
+        normalized_sentence = re.sub(r"'s\b", '', normalized_sentence)  # Remove possessive apostrophes
+        normalized_sentence = re.sub(r"[-]", '', normalized_sentence)  # Remove hyphens
+        normalized_sentence = re.sub(r's\b', '', normalized_sentence)  # Remove plural 's'
         keywords = normalized_sentence.split()  # Split into words
         stemmed_keywords = stem_words(keywords)  # Stem the keywords
 
@@ -144,14 +147,17 @@ class SearchDatabase:
 
         for phrase in possible_phrases:
             # Normalize possible phrase
-            normalized_phrase = phrase.lower().replace('-', '')  # Remove hyphens
+            normalized_phrase = phrase.lower()  # Convert to lowercase
+            normalized_phrase = re.sub(r"'s\b", '', normalized_phrase)  # Remove possessive apostrophes
+            normalized_phrase = re.sub(r"[-]", '', normalized_phrase)  # Remove hyphens
+            normalized_phrase = re.sub(r's\b', '', normalized_phrase)  # Remove plural 's'
             phrase_keywords = normalized_phrase.split()  # Split possible phrase into keywords
             stemmed_phrase_keywords = stem_words(phrase_keywords)  # Stem the possible phrase keywords
 
             # Calculate the similarity score using RapidFuzz
             score = fuzz.token_set_ratio(normalized_sentence, normalized_phrase)
-            
-            # You can adjust the threshold as needed
+
+            # Adjust the threshold as needed
             if score > 50 and all(stemmed_keyword in stemmed_keywords for stemmed_keyword in stemmed_phrase_keywords):
                 matches.append(phrase)
 
