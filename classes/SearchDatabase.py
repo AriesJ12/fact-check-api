@@ -125,11 +125,11 @@ class SearchDatabase:
             }
         }
     
-    def __get_keywords(self, query):
+    def __get_keywords(self,query):
         def stem_words(keywords):
             stemmer = PorterStemmer()
             return [stemmer.stem(word) for word in keywords]
-        
+
         filename = './asset/new_extracted_terms.txt'
         # Load possible phrases from the file
         with open(filename, 'r') as file:
@@ -140,6 +140,7 @@ class SearchDatabase:
         normalized_sentence = re.sub(r"'s\b", '', normalized_sentence)  # Remove possessive apostrophes
         normalized_sentence = re.sub(r"[-]", '', normalized_sentence)  # Remove hyphens
         normalized_sentence = re.sub(r's\b', '', normalized_sentence)  # Remove plural 's'
+        normalized_sentence = re.sub(r'[^\w\s]', '', normalized_sentence)  # Remove punctuation
         keywords = normalized_sentence.split()  # Split into words
         stemmed_keywords = stem_words(keywords)  # Stem the keywords
 
@@ -151,6 +152,7 @@ class SearchDatabase:
             normalized_phrase = re.sub(r"'s\b", '', normalized_phrase)  # Remove possessive apostrophes
             normalized_phrase = re.sub(r"[-]", '', normalized_phrase)  # Remove hyphens
             normalized_phrase = re.sub(r's\b', '', normalized_phrase)  # Remove plural 's'
+            normalized_phrase = re.sub(r'[^\w\s]', '', normalized_phrase)  # Remove punctuation
             phrase_keywords = normalized_phrase.split()  # Split possible phrase into keywords
             stemmed_phrase_keywords = stem_words(phrase_keywords)  # Stem the possible phrase keywords
 

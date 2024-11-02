@@ -6,3 +6,6 @@ HUGGING_FACE_TOKEN=
 
 
 GOOGLE_FACT_CHECK_API=(you may not fill this up, as it is not necessary in this version)
+
+ELASTIC_URL=
+ELASTIC_PASSWORD=
