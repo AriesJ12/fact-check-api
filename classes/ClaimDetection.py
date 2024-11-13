@@ -17,8 +17,8 @@ class ClaimDetection:
     @staticmethod
     def detect_claim(text):
         # added this so that the number of calls per day does not exceed alot for backend deployment
-        counter_instance = Counter(db_file="gpt_calls.db", max_calls_per_day=120)
-        counter_instance.update_counter()
+        # counter_instance = Counter(db_file="gpt_calls.db", max_calls_per_day=120)
+        # counter_instance.update_counter()
         """returns yes or no"""
         if ClaimDetection._classifier is None:
             device = 0 if torch.cuda.is_available() else -1

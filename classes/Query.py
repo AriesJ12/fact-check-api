@@ -25,7 +25,7 @@ class Query:
         ]
         
         """
-        counter_instance = Counter(db_file="gpt_calls.db", max_calls_per_day=80)
+        counter_instance = Counter(db_file="gpt_calls.db", max_calls_per_day=120)
         counter_instance.update_counter()
         
         
@@ -56,8 +56,9 @@ class Query:
                 1. The response is only an array containing up to 4 objects, each representing one distinct health-related claim.
                 2. Each query directly addresses the corresponding health-related claim and does not combine multiple claims.
                 3. The JSON output is valid and complete.
-                4. Respond in the same language as the provided text.
-                5. If no health-related claims are found or fewer than four exist, respond with an array containing only the identified claims or an empty array if none are found."
+                4. Your response for the claim is the same language as the text provided.
+                5. Your response for the query is always in English.
+                6. If no health-related claims are found or fewer than four exist, respond with an array containing only the identified claims or an empty array if none are found."
             """
             )
 
