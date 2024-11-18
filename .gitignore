@@ -2,6 +2,9 @@
 nli/pytorch_model.bin
 nli/model.safetensors
 
+zero_shot/pytorch_model.bin
+zero_shot/model.safetensors
+
 semantic_model/pytorch_model.bin
 semantic_model/model.safetensors
 
