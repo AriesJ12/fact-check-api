@@ -10,7 +10,7 @@ class ClaimDetection:
             print("Loading zero shot model...")
             cls._instance = super(ClaimDetection, cls).__new__(cls)
             device = 0 if torch.cuda.is_available() else -1
-            cls._classifier = pipeline("zero-shot-classification", model="./nli", device=device)
+            cls._classifier = pipeline("zero-shot-classification", model="./zero_shot", device=device)
         return cls._instance
     
 
@@ -22,7 +22,7 @@ class ClaimDetection:
         """returns yes or no"""
         if ClaimDetection._classifier is None:
             device = 0 if torch.cuda.is_available() else -1
-            ClaimDetection._classifier = pipeline("zero-shot-classification", model="./nli", device=device)
+            ClaimDetection._classifier = pipeline("zero-shot-classification", model="./zero_shot", device=device)
         # Define the text to classify and candidate labels
         sequence_to_classify = text
         candidate_labels = ["health", "non-health"]
