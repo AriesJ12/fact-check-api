@@ -118,7 +118,9 @@ class Query:
             generation_config=generation_config,
             system_instruction="""
             You will be given a text. I need you to generate a clear an concise query regarding the text. Respond with a string in the following format:
-                "<clear and concise query>"
+                { 
+                    \"query\": \"<clear and concise query>\"
+                }
                 Ensure that:
                 1. The query directly addresses the corresponding health-related claim.
                 2. Your response for the query is always in English.
@@ -134,7 +136,9 @@ class Query:
             response = chat_session.send_message(text)
             # Extract the text content from the response
             response_text = response.candidates[0].content.parts[0].text
-            return response_text
+            # Parse the JSON response
+            parsed_response = json.loads(response_text)
+            return parsed_response["query"]
         except Exception as e:
             raise Exception("Error accessing backend API")
     
