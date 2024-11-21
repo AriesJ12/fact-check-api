@@ -199,7 +199,7 @@ class SearchDatabase:
         if "items" in results:
             for item in results["items"]:
                 url = item["link"]
-                title = "No title available"  # Default title
+                title = item["title"] # Default title
                 date = "No date available"  # Default date
 
                 if "pagemap" in item:
