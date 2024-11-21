@@ -42,7 +42,7 @@ class Query:
             }
 
             model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-1.5-pro-002",
             generation_config=generation_config,
             system_instruction="""
             You will be given a text. Identify up to 4 individual health-related claims within the text and generate a separate, clear, and concise query for each claim. Respond with an array in the following format:
@@ -56,8 +56,10 @@ class Query:
                 1. The response is only an array containing up to 4 objects, each representing one distinct health-related claim.
                 2. Each query directly addresses the corresponding health-related claim and does not combine multiple claims.
                 3. The JSON output is valid and complete.
-                4. Your response for the claim and query is always in English.
-                5. If no health-related claims are found or fewer than four exist, respond with an array containing only the identified claims or an empty array if none are found."
+                4. Your response for the claim is the same language as the text provided.
+                5. Your response for the query is always in English.
+                6. The query must be able to search up the claim on the internet. AND it must be answerable with a yes or no question. Eg: "Is covid deadly?" is a good query, "What is covid?" is not.
+                7. If no health-related claims are found or fewer than four exist, respond with an array containing only the identified claims or an empty array if none are found."
             """
             )
 

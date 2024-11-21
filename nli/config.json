@@ -1,5 +1,5 @@
 {
-  "_name_or_path": "./results/nli-few-shot/all-nli-3c/DeBERTa-v3-mnli-fever-anli-v1",
+  "_name_or_path": "./nli-scratch/best-multilingual-26lang-2mil7/best-multilingual-nli",
   "architectures": [
     "DebertaV2ForSequenceClassification"
   ],
@@ -39,7 +39,7 @@
   "relative_attention": true,
   "share_att_key": true,
   "torch_dtype": "float16",
-  "transformers_version": "4.11.0",
+  "transformers_version": "4.21.0",
   "type_vocab_size": 0,
-  "vocab_size": 128100
+  "vocab_size": 251000
 }
