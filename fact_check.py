@@ -203,7 +203,7 @@ def main_fact_check_without_query(text, mode):
     """
     POSSIBLE_MODES = ["onlineDatabase", "google"]
     if mode not in POSSIBLE_MODES:
-        return {"result" : "Invalid mode"}
+        return {"result" : "The selected mode is not available"}
     try:
       # check max tokens
       elastic = ElasticPastQueries()
@@ -218,16 +218,18 @@ def main_fact_check_without_query(text, mode):
     MAX_TOKENS = 50
     is_in_range_token = TokenCounter.is_in_range_text(text=text, max_tokens=MAX_TOKENS)
     if (not is_in_range_token):
-        return {"result" : "Invalid number of tokens"}
+        return {"result" : "Invalid text length"}
     
     # check if its a claim
     is_health_claim = ClaimDetection.detect_claim(text)
     if is_health_claim == "no":
-        return {"result" : "No claim detected"}
+        return {"result" : "The model was not able to determined if the text is a health claim"}
     if not is_health_claim == "yes":
-        return {"result" : "error"}
+        return {"result" : "The server is currently having a problem. Please try again later."}
 
-    factClass = FactCheckResult(query=text, hypothesis=text, mode=mode)
+    query = Query.get_query_single(text)
+
+    factClass = FactCheckResult(query=query, hypothesis=text, mode=mode)
     try:
       factClass.get_All_Premises()
     except Exception as e:
@@ -236,7 +238,7 @@ def main_fact_check_without_query(text, mode):
     
     document = {
       "hypothesis": text,
-      "query": text,
+      "query": query,
       "mode": mode,
       "premises": factClass.get_processed_premises()
     }
@@ -274,8 +276,3 @@ def main_claim_detection(text):
         return {"result" : "error"}
     
 
-# if __name__ == '__main__':
-#     text = "Covid is deadly"
-#     print(main_claim_detection(text))
-    # print(main_fact_check_without_query(text))
-#     print(main_fact_check(text))

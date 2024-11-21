@@ -92,4 +92,49 @@ class Query:
         # parsed_response = json.loads(simulated_response)
         # return parsed_response
     
+    @staticmethod
+    def get_query_single(text):
+        """returns:
+        <clear and concise query>
+        """
+        counter_instance = Counter(db_file="gpt_calls.db", max_calls_per_day=120)
+        counter_instance.update_counter()
+        
+        
+        try:
+            genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+
+            # Create the model
+            generation_config = {
+                "temperature": 1,
+                "top_p": 0.95,
+                "top_k": 64,
+                "max_output_tokens": 300,
+                "response_mime_type": "application/json",
+            }
+
+            model = genai.GenerativeModel(
+            model_name="gemini-1.5-pro-002",
+            generation_config=generation_config,
+            system_instruction="""
+            You will be given a text. I need you to generate a clear an concise query regarding the text. Respond with a string in the following format:
+                "<clear and concise query>"
+                Ensure that:
+                1. The query directly addresses the corresponding health-related claim.
+                2. Your response for the query is always in English.
+                3. The query must be able to search up the claim on the internet. AND it must be answerable with a yes or no question. Eg: "Is covid deadly?" is a good query, "What is covid?" is not.
+                4. If the text does not contain any health-related claims. respond with an empty string."
+            """
+            )
+
+            chat_session = model.start_chat(
+            history=[]
+            )
+
+            response = chat_session.send_message(text)
+            # Extract the text content from the response
+            response_text = response.candidates[0].content.parts[0].text
+            return response_text
+        except Exception as e:
+            raise Exception("Error accessing backend API")
     
