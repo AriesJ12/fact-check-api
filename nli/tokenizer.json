@@ -6,7 +6,14 @@
     "strategy": "LongestFirst",
     "stride": 0
   },
-  "padding": null,
+  "padding": {
+    "strategy": "BatchLongest",
+    "direction": "Right",
+    "pad_to_multiple_of": null,
+    "pad_id": 0,
+    "pad_type_id": 0,
+    "pad_token": "[PAD]"
+  },
   "added_tokens": [
     {
       "id": 0,
@@ -81,7 +88,8 @@
       {
         "type": "Metaspace",
         "replacement": "▁",
-        "add_prefix_space": true
+        "prepend_scheme": "always",
+        "split": true
       }
     ]
   },
@@ -163,7 +171,8 @@
   "decoder": {
     "type": "Metaspace",
     "replacement": "▁",
-    "add_prefix_space": true
+    "prepend_scheme": "always",
+    "split": true
   },
   "model": {
     "type": "Unigram",
@@ -1000573,6 +1000582,7 @@
         "▁<extra_id_0>",
         0.0
       ]
-    ]
+    ],
+    "byte_fallback": false
   }
 }

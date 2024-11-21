@@ -1,5 +1,5 @@
 {
-  "_name_or_path": "./nli-scratch/best-multilingual-26lang-2mil7/best-multilingual-nli",
+  "_name_or_path": "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
   "architectures": [
     "DebertaV2ForSequenceClassification"
   ],
@@ -38,8 +38,8 @@
   "position_buckets": 256,
   "relative_attention": true,
   "share_att_key": true,
-  "torch_dtype": "float16",
-  "transformers_version": "4.21.0",
+  "torch_dtype": "float32",
+  "transformers_version": "4.46.2",
   "type_vocab_size": 0,
   "vocab_size": 251000
 }
