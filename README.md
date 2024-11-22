@@ -1,10 +1,9 @@
 # prerequisite
 
 - download the model.safetensors in
-https://huggingface.co/iamaries/mdeberta_healthver/tree/main
+https://huggingface.co/MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7/tree/main
 
 - put it in the nli folder
-
 
 - read elastic_instruction.md
 
