@@ -185,7 +185,7 @@ class SearchDatabase:
             # Assuming the relevant text is in 'fullSummary' key
             full_summary = snippets.get('fullSummary', [])
             if isinstance(full_summary, list):
-                snippets = ' '.join(full_summary)  # Join list into a single string
+                snippets = '... '.join(full_summary)  # Join list into a single string
             else:
                 snippets = str(full_summary)  # Convert to string if not a list
         elif not isinstance(snippets, str):
