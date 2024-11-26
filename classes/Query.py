@@ -34,9 +34,9 @@ class Query:
 
             # Create the model
             generation_config = {
-                "temperature": 1,
+                "temperature": 0.15,
                 "top_p": 0.95,
-                "top_k": 64,
+                "top_k": 40,
                 "max_output_tokens": 300,
                 "response_mime_type": "application/json",
             }
@@ -74,6 +74,7 @@ class Query:
             parsed_response = json.loads(response_text)
             return parsed_response
         except Exception as e:
+            print("Error on gemini:" + e)
             raise Exception("Error accessing backend API")
         
         
@@ -106,9 +107,9 @@ class Query:
 
             # Create the model
             generation_config = {
-                "temperature": 1,
+                "temperature": 0.15,
                 "top_p": 0.95,
-                "top_k": 64,
+                "top_k": 40,
                 "max_output_tokens": 300,
                 "response_mime_type": "application/json",
             }
@@ -140,5 +141,6 @@ class Query:
             parsed_response = json.loads(response_text)
             return parsed_response["query"]
         except Exception as e:
+            print("Error on gemini:" + e)
             raise Exception("Error accessing backend API")
     

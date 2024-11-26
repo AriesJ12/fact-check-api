@@ -21,13 +21,13 @@ class NLISingleton:
     def get_model(cls, model_path='./nli'):
         # Ensure _model is not None before returning it
         if cls._model is None:
-            AutoModelForSequenceClassification.from_pretrained(model_path)
+            cls._model = AutoModelForSequenceClassification.from_pretrained(model_path)
         return cls._model
     
     @classmethod
     def get_tokenizer(cls, model_path='./nli'):
         if cls._tokenizer is None:
-            AutoTokenizer.from_pretrained(model_path)
+            cls._tokenizer = AutoTokenizer.from_pretrained(model_path)
         return cls._tokenizer
     
     @classmethod

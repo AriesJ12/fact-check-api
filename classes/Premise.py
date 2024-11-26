@@ -49,6 +49,7 @@ class Premise:
         for i, probs in enumerate(probabilities):
             label_idx = torch.argmax(probs).item()
             self.premises[i]['relationship'] = label_names[label_idx]
+            self.premises[i]['confidence_level'] = round(float(probs[label_idx].item()) * 100, 1)
         
     def get_all_premises_with_relationship(self):
         return self.premises
