@@ -4,6 +4,7 @@
 
 <h1 align="center">eXtHealth</h1>
 The backend part of eXtHealth, a browser extension that fact-checks health claims on X posts and provides timely health tips and reminders.
+
 # prerequisite
 
 - download the model.safetensors in
